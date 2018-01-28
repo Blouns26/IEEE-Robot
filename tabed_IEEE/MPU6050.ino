@@ -668,7 +668,7 @@ typedef union accel_t_gyro_union
 };
 
 
-void setup()
+void MPU_setup()
 {      
   int error;
   uint8_t c;
@@ -711,7 +711,7 @@ void setup()
 }
 
 
-void loop()
+void MPU_loop()
 {
   int error;
   double dT;

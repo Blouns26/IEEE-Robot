@@ -84,7 +84,7 @@ void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps  
   AFMS.begin();
   
-
+  MPU_setup
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
@@ -125,6 +125,7 @@ void setup() {
 
 void loop() 
 {
+  
   VL53L0X_Loop();
   encoder();
   //delay(100);
@@ -132,7 +133,7 @@ void loop()
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-  
+  MPU_loop
   Serial.println("Raw Sensor value Back sensor");
   Serial.println(distance_Rear());
   Serial.println("Raw Sensor value Right sensor");
