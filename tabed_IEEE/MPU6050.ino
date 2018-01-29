@@ -131,6 +131,15 @@ void MPU_loop() {
   if (gyroYangle < -180 || gyroYangle > 180)
     gyroYangle = kalAngleY;
 
+/////Attempt to return data to main loop///////////
+
+int kalAngleX()
+{
+  long AngleX;
+  AngleX = kalAngleX;
+  return kalAngleX;
+}
+
   /* Print Data */
 #if 0 // Set to 1 to activate
   Serial.print(accX); Serial.print("\t");

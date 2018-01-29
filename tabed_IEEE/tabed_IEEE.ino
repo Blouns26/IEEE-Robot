@@ -104,15 +104,15 @@ void setup() {
   
   Serial.begin(9600);           // set up Serial library at 9600 bps  
   AFMS.begin();
-  
   MPU_setup();
+
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
  VL53L0X_Setup();
 
- ////////////////////////////////////////
+////////////////////////////////////////
 /////////////Motor Setup////////////////
 ////////////////////////////////////////
 
@@ -130,7 +130,7 @@ void setup() {
   motor4->run(BACKWARD);
   motor4->run(RELEASE);
 
-  ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 //////////////Setup smoothing for distance sensors//////////////////////
 ////////////////////////////////////////////////////////////////////////
  
@@ -147,15 +147,18 @@ void setup() {
 void loop() 
 {
   
-  VL53L0X_Loop();
-  encoder();
+  //VL53L0X_Loop();
+  //encoder();
   //delay(100);
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-  MPU_loop();
+    MPU_loop();
+    Ramp_movement();
+    
 }
+
   /*
   Serial.println("Raw Sensor value Back sensor");
   Serial.println(distance_Rear());
@@ -177,8 +180,8 @@ void loop()
   //delay(1000);
  //Centering2();
 
-
- 
+*/
+ /*
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  ////////////////////////////////////////////////////////////////////////// 
@@ -262,9 +265,10 @@ void loop()
   while (center == 8)
    {
   
-   int x = 0;
+   int z = 0;
    time_now = millis();
-   while (x == 0)
+   
+   while (z == 0)
     {     
        Serial.println("Moving to Ramp");
       if (Moving_average_Front() < 900)
@@ -276,7 +280,7 @@ void loop()
           Serial.print(Moving_average_Front());
           Stop(sp);
           Centering2();
-          x = 1;
+          z = 1;
         }
       }
         
@@ -288,7 +292,7 @@ void loop()
   ///////////////////////////////////////////////////////////////////////////////
   while (center == 9)
   {
-    ramp();
+    Ramp_movement();
     center = 10;
   }
   ///////////////////////////////////////////////////////////////////////////////

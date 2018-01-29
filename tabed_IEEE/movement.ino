@@ -145,17 +145,16 @@ int Centering2()
  }
 */
 }
-
-
+/*
 void ramp()
 {
   
   move_backward(rsp);
-  delay(1500);
-  if (distance_Rear() > 150)
+  delay(1800);
+  if (distance_Rear() > 200)
     {
       move_backward(ssp);
-      if (Moving_average_Rear() <= 150)
+      if (distance_Rear() <= 150)
         {
           Stop(sp);
           Centering();        
@@ -163,6 +162,33 @@ void ramp()
     }
   
   center = 0;
+}
+*/
+
+void Ramp_movement()
+{
+   
+    //Serial.println("checking angle");
+    int y = 0;
+    
+    while (y ==0)
+    {
+      if (kalAngleX < 8 )
+      {
+        Serial.println("starting to move up ramp");
+        Serial.println(KalAngleX());
+        
+        move_backward(sssp);
+        
+      }
+      else if (kalAngleX >= 8)
+      {
+        Serial.println("Moving up the ramp");
+        move_backward(rsp);
+        y = 1;
+      }
+    }
+    Stop(sp);
 }
 
 
