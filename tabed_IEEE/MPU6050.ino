@@ -15,7 +15,6 @@
  e-mail   :  kristianl@tkjelectronics.com
  */
 
-
 void MPU_setup() {
   TWBR = ((F_CPU / 400000L) - 16) / 2; // Set I2C frequency to 400kHz
 
@@ -131,15 +130,8 @@ void MPU_loop() {
   if (gyroYangle < -180 || gyroYangle > 180)
     gyroYangle = kalAngleY;
 
+
 /////Attempt to return data to main loop///////////
-
-int kalAngleX()
-{
-  long AngleX;
-  AngleX = kalAngleX;
-  return kalAngleX;
-}
-
   /* Print Data */
 #if 0 // Set to 1 to activate
   Serial.print(accX); Serial.print("\t");
@@ -175,3 +167,5 @@ int kalAngleX()
   Serial.print("\r\n");
   delay(2);
 }
+
+

@@ -78,10 +78,10 @@ Adafruit_DCMotor *motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *motor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
-int rsp = 135;
-int sp = 75;//75
-int ssp = 50;
-int sssp = 30;
+int rsp = 150;
+int sp = 100;//75
+int ssp = 75;
+int sssp = 50;
 int center = 0;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ void loop()
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-    MPU_loop();
+    //MPU_loop();
     Ramp_movement();
     
 }
@@ -181,12 +181,12 @@ void loop()
  //Centering2();
 
 */
- /*
+/*
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
- ////////////////////////////////////////////////////////////////////////// 
-  
-  while(center==0)
+ /////////////////////////////////////////////////////////////// 
+ int center = 1; 
+  while(center == 1 )
   {
   Centering();        // First Centering operation to make sure it is located on IR sensor
   center=2;

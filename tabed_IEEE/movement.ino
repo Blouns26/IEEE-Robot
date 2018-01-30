@@ -173,22 +173,32 @@ void Ramp_movement()
     
     while (y ==0)
     {
-      if (kalAngleX < 8 )
-      {
-        Serial.println("starting to move up ramp");
-        Serial.println(KalAngleX());
-        
-        move_backward(sssp);
-        
+      MPU_loop();
+      if (kalAngleX < 12 )
+        {
+          Serial.println("starting to move up ramp");
+          Serial.println(kalAngleX);
+          MPU_loop();
+          move_backward(sp);  
+        }
+      
+       else if (kalAngleX >= 12)
+        {
+          Serial.println("Moving up the ramp");
+          move_backward(rsp);
+          if (distance_Rear() <= 150)
+          {
+            Stop(sp);
+            y = 1;     
+          }   
+         }
       }
-      else if (kalAngleX >= 8)
-      {
-        Serial.println("Moving up the ramp");
-        move_backward(rsp);
-        y = 1;
-      }
-    }
-    Stop(sp);
+     while (y == 1)
+     {
+      Centering();
+      y == 2;
+     }
+    
 }
 
 
