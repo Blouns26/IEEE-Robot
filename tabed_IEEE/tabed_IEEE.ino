@@ -78,7 +78,9 @@ Adafruit_DCMotor *motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *motor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
-int rsp = 150;
+int rsp = 125;
+int fsp = 225;
+int brsp = 110;
 int sp = 100;//75
 int ssp = 75;
 int sssp = 50;
@@ -155,9 +157,9 @@ void loop()
     Moving_average_Left();
     Moving_average_Right();
     //MPU_loop();
-    Ramp_movement();
+    //Ramp_movement();
     
-}
+
 
   /*
   Serial.println("Raw Sensor value Back sensor");
@@ -181,7 +183,7 @@ void loop()
  //Centering2();
 
 */
-/*
+
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
