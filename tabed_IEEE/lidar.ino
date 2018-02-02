@@ -102,7 +102,7 @@ void VL53L0X_Setup()
   #endif
   
  // #if defined HIGH_ACCURACY
-    // Increase timing budget to 20 ms (defaukt is about 33 ms)
+ //   Increase timing budget to 20 ms (defaukt is about 33 ms)
  //   Sensor1.setMeasurementTimingBudget(200000);
  // #endif
   /*#if defined LONG_RANGE

@@ -156,34 +156,10 @@ void loop()
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-    //MPU_loop();
-    //Ramp_movement();
-    
-
-
-  /*
-  Serial.println("Raw Sensor value Back sensor");
-  Serial.println(distance_Rear());
-  Serial.println("Raw Sensor value Right sensor");
-  Serial.println(distance_Right());
-  Serial.println("Raw Sensor value Front senor");
-  Serial.println(distance_Front());
-  Serial.println("Raw Sensor value Left sensor");
-  Serial.println(distance_Left());
-  //delay(1000); 
-  Serial.println("Moving Average left sensor");
-  Serial.println(Moving_average_Left());
-  Serial.println("Moving Average back sensor");
-  Serial.println(Moving_average_Rear()); 
-  Serial.println("Moving Average Right sensor");
-  Serial.println(Moving_average_Right());
-  Serial.println("Moving Average Front sensor");
-  Serial.println(Moving_average_Front());
-  //delay(1000);
- //Centering2();
-
-*/
-
+   MPU_loop();
+   //Ramp_movement();
+}
+/*
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 

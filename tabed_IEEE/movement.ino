@@ -1,33 +1,7 @@
 
- void main_movement() 
- {
-  int distance_Front_0 = distance_Front();
-  int Moving_average_Rear_0 = Moving_average_Rear();
-  int distance_Right_0 = distance_Right();  
-    
-    //Move straight when nothing is in the way.
-  if(distance_Front_0 >= 500)
-    {      move_forward(ssp);
-      Serial.println(distance_Front_0);
-      Serial.println("Moving forward");
-      ///delay(1);
-    }
-  else if(distance_Right() < 500)
-    {
-       move_backward(ssp);
-       Serial.println("Moving backward");
-       delay(100);
-     }
-    else if(Moving_average_Rear() < 500)
-     {
-          move_right(ssp);
-          Serial.println("Moving right");
-          delay(500);
-      }
- }
-
 int Centering()
 {
+  Serial.println("Starting Centering operation");
   int x=0;
   while( x==0)
   {
@@ -51,26 +25,25 @@ int Centering()
  }
  while (x==1)
  {
-     if( Moving_average_Rear() > 135)
+     if( distance_Rear() > 135)
      {
           move_backward(sssp);
      }
-     else if (Moving_average_Rear() < 128) 
+     else if (distance_Rear() < 128) 
      {
           move_forward(sssp);
      }
-     else if (Moving_average_Rear() >=128 || Moving_average_Rear() <=135)
+     else if (distance_Rear() >=128 || distance_Rear() <=135)
      {
          Stop(ssp);
-// delay(1000);
          x=2;
      }
  }
 }
-////////test
 
 int Centering2()
 {
+  Serial.println("Starting lower lv Centering operation");
   int x=0;
   while( x==0)
   {
@@ -101,49 +74,6 @@ int Centering2()
           x=1;
         }
   }
-/*
-int Centering2()
-{
-  int x=0;
-  while( x==0)
-  {
-    if (distance_Right() < 450)
-    {
-      move_left(ssp);
-      Serial.println("moving left");
-    }
-    else if (distance_Left() < 450)
-    {
-      move_right(ssp);
-      Serial.println("moving right");
-    }
-    else if (distance_Right() >= 450)
-    {
-      Serial.println("stop");
-      Stop(ssp);
-      delay(2000);
-      x=2;
-    }
-  }
- */
- /*
- while (x==1)
- {
- if( Moving_average_Rear()() > 135)
- {
-  move_backward(ssp);
- }
- else if (Moving_average_Rear()() < 125) 
- {
-  move_forward(ssp);
- }
- else if (Moving_average_Rear()() <=125 || Moving_average_Rear()() >=135){
- Stop(ssp);
-// delay(1000);
- x=2;
-  }
- }
-*/
 }
 /*
 void ramp()
@@ -168,7 +98,7 @@ void ramp()
 void Ramp_movement()
 {
    
-    //Serial.println("checking angle");
+    Serial.println("Starting Ramp_Movement function");
     int y = 0;
     
     while (y ==0)
@@ -179,14 +109,21 @@ void Ramp_movement()
           Serial.println("starting to move up ramp");
           Serial.println(kalAngleX);
           MPU_loop();
-          move_backward(brsp);  
+          move_backward(sp);  
         }
       
        else if (kalAngleX >= 7)
         {
-          Serial.println("Moving up the ramp");
-          move_backward_ramp(rsp);
-          MPU_loop();
+          for (int i = 0; i < 1; i ++)
+          { 
+            move_forward(sssp);
+            delay (400);
+            i = i++;
+          }
+                     
+            Serial.println("Moving up the ramp");
+            move_backward_ramp(rsp);
+            MPU_loop();
           if (distance_Rear() <= 200)
           {
             Stop(sp);
@@ -209,7 +146,8 @@ void Ramp_movement()
 /////////////IR code reading/////////
 ////////////////////////////////////
 void codemoveA(){
-  
+
+  Serial.println("Starting CodemoveA function");
   int x =0;
   //int y=1;
   while(x==0){
@@ -261,6 +199,8 @@ void codemoveA(){
 
 void codemoveB()
 {
+  Serial.println("Starting codemoveB function");
+  
   int x =0;
   int y =0;
   while(x==0)
@@ -294,7 +234,7 @@ void codemoveB()
   
  
 void codemoveC(){
-  
+  Serial.println("Starting codemoveC function");
   int x =0;
   //int y=1;
   while(x==0){
@@ -346,6 +286,7 @@ void codemoveC(){
 
 void chestmove()
 {
+  Serial.println("Starting Chestmove function");
   int chest_exit = 0;
   while (chest_exit == 0)
   {
@@ -367,6 +308,8 @@ void chestmove()
 
 void flagmove()
 {
+  Serial.println("Starting flagmove function");
+  
   int flag_exit = 0;
   while (flag_exit == 0)
   {
