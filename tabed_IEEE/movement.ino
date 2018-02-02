@@ -116,24 +116,41 @@ void Ramp_movement()
         {
           for (int i = 0; i < 1; i ++)
           { 
-            move_forward(sssp);
-            delay (400);
+            move_forward(ssp);
             i = i++;
+            delay(500);
+            Stop(sp);
+            
           }
-                     
-            Serial.println("Moving up the ramp");
-            move_backward_ramp(rsp);
+          y = 1;
+        }            
+         while( y == 1)
+         
+         {   
+            int previous_reading = 0;
             MPU_loop();
-          if (distance_Rear() <= 200)
+            if (kalAngleX < 7)
+            {
+            Serial.println("Moving up the ramp");
+            move_backward_ramp();
+            MPU_loop();
+            previous_reading = kalAngleX;
+            }
+            
+            if (previous_reading > 10 || distance_Rear() <= 190)
           {
-            Stop(sp);
+            Serial.println("Reading back distance");
+            Serial.println(distance_Rear());
             move_backward(sssp);
+            if (distance_Rear() < 100)
+            {
             Stop(sp);
-            y = 1;     
+            y = 2;
+            }    
           }   
          }
       }
-     while (y == 1)
+     while (y == 2)
      {
       //Centering();
       y == 2;
@@ -451,12 +468,12 @@ void square_right(int sp)
 }
 
 
-void move_backward_ramp(int sp)
+void move_backward_ramp()
 {
   motor1->run(FORWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(rsp);
   motor2->run(BACKWARD);
-  motor2->setSpeed(sp);
+  motor2->setSpeed(rsp);
   motor3->run(BACKWARD);
   motor3->setSpeed(fsp);
   motor4->run(FORWARD);

@@ -1,14 +1,18 @@
 
-
-/ Right encoder
-#define c_RightEncoderInterrupt 5
-#define c_RightEncoderPinA 18
+/*
+// Right encoder
+#define c_RightEncoderInterrupt 18
+#define c_RightEncoderPinA 23
 #define c_RightEncoderPinB 24
 volatile bool _RightEncoderBSet;
 volatile long _RightEncoderTicks = 0; 
 
-
-
+// Left encoder
+#define c_LeftEncoderPinA 25
+#define c_LeftEncoderPinB 26
+#define c_LeftEncoderInterrupt 19  
+volatile bool _LeftEncoderBSet;
+volatile long _LeftEncoderTicks = 0; 
 
 void Encoder_setup()
 {
@@ -71,3 +75,4 @@ void HandleRightMotorInterruptA()
     _RightEncoderTicks += _RightEncoderBSet ? -1 : +1;
   #endif
 }
+*/

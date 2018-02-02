@@ -45,7 +45,7 @@ int distance_Rear2()
 ////////////////////////////////////////////////////////////////////////////
 
 
-void VL53L0X_Setup()
+void VL53L0X_setup()
 {
   /*WARNING*/
   //Shutdown pins of VL53L0X ACTIVE-LOW-ONLY NO TOLERANT TO 5V will fry them

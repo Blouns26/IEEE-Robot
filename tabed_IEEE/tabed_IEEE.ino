@@ -1,3 +1,5 @@
+
+
 /////////////////////////////////////////////////////
 //////////////////////GLOBAL////////////////////////
 ///////////////////////////////////////////////////
@@ -7,6 +9,7 @@
 #include <VL53L0X.h>
 #include <math.h>
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
+//#include <digitalWriteFast.h>
 
 #define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
@@ -78,7 +81,7 @@ Adafruit_DCMotor *motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *motor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
-int rsp = 125;
+int rsp = 145;
 int fsp = 225;
 int brsp = 110;
 int sp = 100;//75
@@ -112,7 +115,8 @@ void setup() {
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
- VL53L0X_Setup();
+ VL53L0X_setup();
+//Encoder_setup();
 
 ////////////////////////////////////////
 /////////////Motor Setup////////////////
@@ -149,15 +153,14 @@ void setup() {
 void loop() 
 {
   
-  //VL53L0X_Loop();
-  //encoder();
-  //delay(100);
+  VL53L0X_Loop();
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-   MPU_loop();
-   //Ramp_movement();
+   //MPU_loop();
+   Ramp_movement();
+   //Encoder_loop();
 }
 /*
  //////////////////////////////////////////////////////////////////////////
