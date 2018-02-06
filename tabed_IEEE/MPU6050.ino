@@ -133,19 +133,22 @@ void MPU_loop() {
 
 /////Attempt to return data to main loop///////////
   /* Print Data */
-#if 0 // Set to 1 to activate
-  Serial.print(accX); Serial.print("\t");
-  Serial.print(accY); Serial.print("\t");
-  Serial.print(accZ); Serial.print("\t");
+#if 1 // Set to 1 to activate
+  Serial.print(accX / 16384); Serial.print("\t");
+  Serial.print(accY / 16384); Serial.print("\t");
+  Serial.print(accZ / 16384); Serial.print("\t");
+  //Serial.print(accX); Serial.print("RAWX"); Serial.print("\t");
+  //Serial.print(accX/16384); Serial.print("CalcX"); Serial.print("\t");
+  //Serial.print(accZ/16384); Serial.print("\t");
 
-  Serial.print(gyroX); Serial.print("\t");
-  Serial.print(gyroY); Serial.print("\t");
-  Serial.print(gyroZ); Serial.print("\t");
-
+  //Serial.print(gyroX); Serial.print("\t");
+  //Serial.print(gyroY); Serial.print("\t");
+  //Serial.print(gyroZ); Serial.print("\t");
+  delay(100);
   Serial.print("\t");
 #endif
 
-#if 1 // Set to 0 to deactivate
+#if 0 // Set to 0 to deactivate
   Serial.print(roll); Serial.print("\t");
   Serial.print(gyroXangle); Serial.print("\t");
   Serial.print(compAngleX); Serial.print("\t");

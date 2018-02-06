@@ -10,6 +10,7 @@
 #include <math.h>
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
 //#include <digitalWriteFast.h>
+#include <Encoder.h>
 
 #define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
@@ -31,17 +32,6 @@ uint8_t i2cData[14]; // Buffer for I2C data
 // TODO: Make calibration routine
 
 
-//////////Encoders///////////
-int val;
-int encoder0PinA = 26;
-int encoder0PinB = 28;
-int encoder0Pos = 0;
-int encoder0PinALast = LOW;
-int n = LOW;
-int y = 0;
-int period = 2000;
-unsigned long time_now = 0;
-int flag_move_rdy = 0;
 
 ////////////////////////////////////////////////////////////
 ///////////////////LIDAR INITIALIZATION/////////////////////
@@ -104,19 +94,17 @@ int C = rand() % 2;
 void setup() {
 
 
-  pinMode (encoder0PinA, INPUT);
-  pinMode (encoder0PinB, INPUT);
   
   Serial.begin(9600);           // set up Serial library at 9600 bps  
   AFMS.begin();
   MPU_setup();
-
+  PID_setup();
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
  VL53L0X_setup();
-//Encoder_setup();
+ 
 
 ////////////////////////////////////////
 /////////////Motor Setup////////////////
@@ -153,14 +141,25 @@ void setup() {
 void loop() 
 {
   
-  VL53L0X_Loop();
+   //VL53L0X_Loop();
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
    //MPU_loop();
-   Ramp_movement();
-   //Encoder_loop();
+   //PID_loop();
+   //Ramp_movement();
+   Encoder_loop();
+   //move_forward(40);
+   int center = 7;
+while (center == 7)
+  {  
+   distance_test();
+   Encoder_loop();
+  }
+  
+
+
 }
 /*
  //////////////////////////////////////////////////////////////////////////

@@ -352,7 +352,35 @@ void flagmove()
    }
   
 }
+void distance_test()
+{
+  Serial.println("Starting distance test function");
   
+  int flag_exit = 0;
+  while (flag_exit == 0)
+  {
+    Encoder_loop();
+    if (distance_Front()> 300)
+    {
+      Serial.println("Moving forward");
+      move_forward(ssp);
+      if (distance_Front() < 300 && distance_Front() > 180) 
+      {
+        move_forward(sssp);    
+      }
+    } 
+    else if (distance_Front() <= 100)
+      {
+        Serial.print("Stopping at flag");
+        Stop(sp);
+        delay(10000);
+        //Centering2();
+        flag_exit = 1;
+      }
+   
+   }
+  
+}
 /////////////////////////////////////////////////////////////////////////////
 //////////////////////////Motor direction setup//////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
