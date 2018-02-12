@@ -116,13 +116,14 @@ void Ramp_movement()
         {
           for (int i = 0; i < 1; i ++)
           { 
+            Serial.print("Setting up to move up ramp");
             move_forward(ssp);
             i = i++;
             delay(500);
             Stop(sp);
-            
+            y = 1;
           }
-          y = 1;
+          
         }            
          while( y == 1)
          
@@ -360,18 +361,18 @@ void distance_test()
   while (flag_exit == 0)
   {
     Encoder_loop();
-    if (distance_Front()> 300)
+    if (distance_Left()> 300)
     {
-      Serial.println("Moving forward");
-      move_forward(ssp);
-      if (distance_Front() < 300 && distance_Front() > 180) 
+      Serial.println("Moving left");
+      move_left(ssp);
+      if (distance_Left() < 300 && distance_Left() > 180) 
       {
-        move_forward(sssp);    
+        move_left(sssp);    
       }
     } 
-    else if (distance_Front() <= 100)
+    else if (distance_Left() <= 100)
       {
-        Serial.print("Stopping at flag");
+        Serial.print("Stopping at wall");
         Stop(sp);
         delay(10000);
         //Centering2();
@@ -503,9 +504,9 @@ void move_backward_ramp()
   motor2->run(BACKWARD);
   motor2->setSpeed(rsp);
   motor3->run(BACKWARD);
-  motor3->setSpeed(fsp);
+  motor3->setSpeed(rsp);
   motor4->run(FORWARD);
-  motor4->setSpeed(fsp);
+  motor4->setSpeed(rsp);
 }
 
 

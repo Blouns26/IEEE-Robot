@@ -71,13 +71,14 @@ Adafruit_DCMotor *motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *motor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
-int rsp = 145;
-int fsp = 225;
-int brsp = 110;
-int sp = 100;//75
-int ssp = 75;
-int sssp = 50;
+int rsp = 135;
+int fsp = 175;
+int brsp = 75;
+int sp = 50;//75
+int ssp = 40;
+int sssp = 25;
 int center = 0;
+
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////TEST VARIABLES FOR INFRARED SENSOR//////////////////
@@ -141,27 +142,17 @@ void setup() {
 void loop() 
 {
   
-   //VL53L0X_Loop();
+    VL53L0X_Loop();
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
    //MPU_loop();
-   //PID_loop();
+   PID_loop();
    //Ramp_movement();
-   Encoder_loop();
+   //Encoder_loop();
    //move_forward(40);
-   int center = 7;
-while (center == 7)
-  {  
-   distance_test();
-   Encoder_loop();
-  }
-  
-
-
-}
-/*
+   
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
@@ -244,9 +235,10 @@ while (center == 7)
   /////////////////////////////////////////////////////////////////////////////
   while (center == 8)
    {
-  
+  /*
    int z = 0;
-   time_now = millis();
+   int time_now = millis();
+   int period = 1000;
    
    while (z == 0)
     {     
@@ -265,6 +257,8 @@ while (center == 7)
       }
         
     }
+    */
+    Ramp_movement();
     center = 9;
   }
   ///////////////////////////////////////////////////////////////////////////////
