@@ -9,8 +9,11 @@
 #include <VL53L0X.h>
 #include <math.h>
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
-//#include <digitalWriteFast.h>
 #include <Encoder.h>
+#include <IRLibRecvPCI.h>
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(8,9,4,5,6,7);
 
 #define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
@@ -29,7 +32,9 @@ double kalAngleX, kalAngleY; // Calculated angle using a Kalman filter
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
 
+IRrecvPCI myReceiver(18);//pin number for the receiver
 // TODO: Make calibration routine
+
 
 
 
@@ -78,14 +83,14 @@ int sp = 50;//75
 int ssp = 40;
 int sssp = 25;
 int center = 0;
-
+int _decode = 0;
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////TEST VARIABLES FOR INFRARED SENSOR//////////////////
 ///////////////////////////////////////////////////////////////////////////
-int A =rand() % 2;
-int B = rand() % 2;
-int C = rand() % 2;
+int A = 0;
+int B = 0;
+int C = 0;
 
 
 //////////////////////////////////////////
@@ -98,13 +103,19 @@ void setup() {
   
   Serial.begin(9600);           // set up Serial library at 9600 bps  
   AFMS.begin();
-  MPU_setup();
-  PID_setup();
+  myReceiver.enableIRIn(); // Start the receiver
+  Serial.println(F("Ready to receive IR signals"));
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16,2);
+  // Print a message to the LCD.
+  lcd.print("waiting");
+  //MPU_setup();
+  //PID_setup();
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
- VL53L0X_setup();
+ //VL53L0X_setup();
  
 
 ////////////////////////////////////////
@@ -141,21 +152,102 @@ void setup() {
 
 void loop() 
 {
-  
-    VL53L0X_Loop();
-    Moving_average_Rear();
-    Moving_average_Front();
-    Moving_average_Left();
-    Moving_average_Right();
+     //Decode_loop();
+     int Stage_number = Decode_loop();
+     //Serial.println(Stage_number);
+     int stage_adv = 0;
+while (stage_adv == 0){
+     
+     if (Stage_number == 0)
+     {
+        A=0;
+        B=0;
+        C=0;
+        lcd.setCursor(0,1);
+        lcd.print("000");
+        stage_adv = 1;
+      }
+     else if(Stage_number == 1)
+     {
+        A = 0;
+        B = 0;
+        C = 1; 
+        lcd.setCursor(0,1);  
+        lcd.print("001");
+        stage_adv = 1;
+     }
+      else if(Stage_number == 2)
+      {
+        A = 0;
+        B = 1;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("010");
+        stage_adv = 1;
+      }
+      else if(Stage_number == 3)
+      {
+        A = 0;
+        B = 1;
+        C = 1;
+        lcd.setCursor(0,1);
+        lcd.print("011");
+        stage_adv = 1;
+      }
+      else if(Stage_number == 4)
+      {
+        A = 1;
+        B = 0;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("100");
+        stage_adv = 1;     
+      }
+      else if (Stage_number == 5)
+      {
+       A = 1;
+       B = 0;
+       C = 1; 
+       lcd.setCursor(0,1);
+       lcd.print("101");
+       stage_adv = 1;
+      }
+      else if (Stage_number == 6)
+      {
+        A = 1;
+        B = 1;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("110");
+        stage_adv = 1;
+      }
+      else if (Stage_number == 7)
+      {
+        A = 1;
+        B = 1;
+        C = 1;
+        lcd.setCursor(0,1);
+        lcd.print("111");
+        stage_adv = 1;
+      }
+      
+}
+    //VL53L0X_Loop();
+    //Moving_average_Rear();
+    //Moving_average_Front();
+    //Moving_average_Left();
+    //Moving_average_Right();
    //MPU_loop();
-   PID_loop();
+   // PID_loop();
    //Ramp_movement();
-   //Encoder_loop();
+   // Encoder_loop();
    //move_forward(40);
-   
+    
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
+}
+ /*
  int center = 1; 
   while(center == 1 )
   {
@@ -257,7 +349,7 @@ void loop()
       }
         
     }
-    */
+    
     Ramp_movement();
     center = 9;
   }

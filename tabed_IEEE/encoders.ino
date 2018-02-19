@@ -50,6 +50,5 @@ void Encoder_loop() {
     Serial.print("\t");
   }
   
- 
 }
 

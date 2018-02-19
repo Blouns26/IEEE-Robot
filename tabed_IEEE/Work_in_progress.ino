@@ -214,7 +214,8 @@ void PID_loop() {
     timePrev = time;  // the previous time is stored before the actual time read
     time = millis();  // actual time read
     elapsedTime = (time - timePrev) / 1000; 
-  
+   
+    
   /*The tiemStep is the time that elapsed since the previous loop. 
    * This is the value that we will use in the formulas as "elapsedTime" 
    * in seconds. We work in ms so we haveto divide the value by 1000 
