@@ -26,14 +26,14 @@ int Decode_loop()
     //Serial.println(recvGlobal.recvLength,DEC);
     //Serial.print(F("uint16_t rawData[RAW_DATA_LEN]={\n\t"));
     for(bufIndex_t i=1;i<recvGlobal.recvLength;i++) {
-      //Serial.print(recvGlobal.recvBuffer[i],DEC);
-      //Serial.print(F(", "));
+     //Serial.print(recvGlobal.recvBuffer[i],DEC);
+     //Serial.print(F(", "));
       //if( (i % 8)==0) Serial.print(F("\n\t"));
           
     }
     //Serial.println(F("1000};"));//Add arbitrary trailing space
        
-    if ( sizeof(recvGlobal.recvBuffer)> 19)
+    if ( sizeof(recvGlobal.recvBuffer) >= 20)
     {
       int c = recvGlobal.recvBuffer[18];
       int b = recvGlobal.recvBuffer[16];

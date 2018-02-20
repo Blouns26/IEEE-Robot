@@ -82,7 +82,7 @@ int brsp = 75;
 int sp = 50;//75
 int ssp = 40;
 int sssp = 25;
-int center = 0;
+//int center = 0;
 int _decode = 0;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -109,13 +109,13 @@ void setup() {
   lcd.begin(16,2);
   // Print a message to the LCD.
   lcd.print("waiting");
-  //MPU_setup();
+  MPU_setup();
   //PID_setup();
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
- //VL53L0X_setup();
+ VL53L0X_setup();
  
 
 ////////////////////////////////////////
@@ -152,13 +152,37 @@ void setup() {
 
 void loop() 
 {
-     //Decode_loop();
+     Decode_loop();
      int Stage_number = Decode_loop();
      //Serial.println(Stage_number);
-     int stage_adv = 0;
-while (stage_adv == 0){
      
-     if (Stage_number == 0)
+
+    VL53L0X_Loop();
+    Moving_average_Rear();
+    Moving_average_Front();
+    Moving_average_Left();
+    Moving_average_Right();
+    MPU_loop();
+   // PID_loop();
+   //Ramp_movement();
+   // Encoder_loop();
+   //move_forward(150);
+    
+ //////////////////////////////////////////////////////////////////////////
+ ////////////////////////Setup to read IR Sensor///////////////////////////
+ /////////////////////////////////////////////////////////////// 
+
+  
+  int center = 0;
+ 
+  while (center == 0){
+    int Stage_adv = 0;
+    
+    Serial.println("Reading IR values"); 
+    while (Stage_adv == 0){
+          //Serial.print("AM I HERE");
+          Decode_loop(); 
+     /*if (Stage_number == 0)
      {
         A=0;
         B=0;
@@ -167,61 +191,68 @@ while (stage_adv == 0){
         lcd.print("000");
         stage_adv = 1;
       }
-     else if(Stage_number == 1)
+      */
+     if(Stage_adv == 1)
      {
         A = 0;
         B = 0;
         C = 1; 
         lcd.setCursor(0,1);  
         lcd.print("001");
-        stage_adv = 1;
+        //Stage_adv = 1;
+        center = 1;
      }
-      else if(Stage_number == 2)
+      else if(Stage_adv == 2)
       {
         A = 0;
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
         lcd.print("010");
-        stage_adv = 1;
+        //Stage_adv = 1;
+        center = 1;
       }
-      else if(Stage_number == 3)
+      else if(Stage_adv == 3)
       {
         A = 0;
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
         lcd.print("011");
-        stage_adv = 1;
+        //Stage_adv = 1;
+        center = 1;
       }
-      else if(Stage_number == 4)
+      else if(Stage_adv == 4)
       {
         A = 1;
         B = 0;
         C = 0;
         lcd.setCursor(0,1);
         lcd.print("100");
-        stage_adv = 1;     
+        //Stage_adv = 1;
+        center = 1;     
       }
-      else if (Stage_number == 5)
+      else if (Stage_adv == 5)
       {
        A = 1;
        B = 0;
        C = 1; 
        lcd.setCursor(0,1);
        lcd.print("101");
-       stage_adv = 1;
+       //Stage_adv = 1;
+       center = 1;
       }
-      else if (Stage_number == 6)
+      else if (Stage_adv == 6)
       {
         A = 1;
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
         lcd.print("110");
-        stage_adv = 1;
+        //Stage_adv = 1;
+        center = 1;
       }
-      else if (Stage_number == 7)
+      /*else if (Stage_adv == 7)
       {
         A = 1;
         B = 1;
@@ -230,25 +261,14 @@ while (stage_adv == 0){
         lcd.print("111");
         stage_adv = 1;
       }
-      
-}
-    //VL53L0X_Loop();
-    //Moving_average_Rear();
-    //Moving_average_Front();
-    //Moving_average_Left();
-    //Moving_average_Right();
-   //MPU_loop();
-   // PID_loop();
-   //Ramp_movement();
-   // Encoder_loop();
-   //move_forward(40);
-    
- //////////////////////////////////////////////////////////////////////////
- ////////////////////////Setup to read IR Sensor///////////////////////////
- /////////////////////////////////////////////////////////////// 
-}
- /*
- int center = 1; 
+      */
+    Stage_adv = 0;
+    }
+   Serial.print("Leaving loop");
+   center = 1;
+  }
+
+  
   while(center == 1 )
   {
   Centering();        // First Centering operation to make sure it is located on IR sensor
@@ -327,7 +347,7 @@ while (stage_adv == 0){
   /////////////////////////////////////////////////////////////////////////////
   while (center == 8)
    {
-  /*
+  
    int z = 0;
    int time_now = millis();
    int period = 1000;
@@ -372,6 +392,7 @@ while (stage_adv == 0){
     center = 0;
   }
   
+  
   ////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////IR test////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////  
@@ -388,6 +409,7 @@ while (stage_adv == 0){
   }
   
 }
+
 ///////////////////////////////////////////////////////////////
 ////////////////////Code for testing only//////////////////////
 ///////////////////////////////////////////////////////////////
