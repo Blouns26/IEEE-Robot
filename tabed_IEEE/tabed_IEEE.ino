@@ -11,12 +11,13 @@
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
 #include <Encoder.h>
 #include <IRLibRecvPCI.h>
-#include <LiquidCrystal.h>
+//#include <LiquidCrystal.h>
 
-LiquidCrystal lcd(8,9,4,5,6,7);
+//LiquidCrystal lcd(8,9,4,5,6,7);
 
-#define RESTRICT_PITCH // Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+#define RESTRICT_PITCH // Comment out to restrict roll to Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
+/*Kalman Filter*/
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
 
@@ -32,9 +33,7 @@ double kalAngleX, kalAngleY; // Calculated angle using a Kalman filter
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
 
-IRrecvPCI myReceiver(18);//pin number for the receiver
-// TODO: Make calibration routine
-
+//IRrecvPCI myReceiver(18);//pin number for the receiver
 
 
 
@@ -43,11 +42,11 @@ IRrecvPCI myReceiver(18);//pin number for the receiver
 ////////////////////////////////////////////////////////////
 
 #define XSHUT_pin6 41
-#define XSHUT_pin5 39
-#define XSHUT_pin4 37
+#define XSHUT_pin5 31
+#define XSHUT_pin4 39
 #define XSHUT_pin3 35
-#define XSHUT_pin2 33
-#define XSHUT_pin1 31
+#define XSHUT_pin2 37
+#define XSHUT_pin1 33
 
 //ADDRESS_DEFAULT 0b0101001 or 41
 #define Sensor1_newAddress 41 
@@ -76,12 +75,24 @@ Adafruit_DCMotor *motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *motor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
+
+
+
+/////////////////////////////////////////////////////////////////////////
+////////////////////////Variable Decleration/////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+/*Speed Variables*/
 int rsp = 135;
-int fsp = 175;
+int fsp = 155;
 int brsp = 75;
 int sp = 50;//75
 int ssp = 40;
 int sssp = 25;
+
+/*Encoder variable*/
+
+
 //int center = 0;
 int _decode = 0;
 
@@ -100,22 +111,23 @@ int C = 0;
 void setup() {
 
 
-  
-  Serial.begin(9600);           // set up Serial library at 9600 bps  
+
+  Serial.begin(9600);// set up Serial library at 9600 bps  
+  Serial3.begin(9600);
   AFMS.begin();
-  myReceiver.enableIRIn(); // Start the receiver
-  Serial.println(F("Ready to receive IR signals"));
+  //myReceiver.enableIRIn(); // Start the receiver
+  //Serialprintln(F("Ready to receive IR signals"));
   // set up the LCD's number of columns and rows:
-  lcd.begin(16,2);
+  //lcd.begin(16,2);
   // Print a message to the LCD.
-  lcd.print("waiting");
-  MPU_setup();
+  //lcd.print("waiting");
+   //MPU_setup();
   //PID_setup();
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
  
- VL53L0X_setup();
+     VL53L0X_setup();
  
 
 ////////////////////////////////////////
@@ -152,36 +164,80 @@ void setup() {
 
 void loop() 
 {
-     Decode_loop();
-     int Stage_number = Decode_loop();
-     //Serial.println(Stage_number);
-     
-
-    VL53L0X_Loop();
+ //VL53L0X_Loop();
+ Serial.print("Front distance:  ");
+ Serial.println(distance_Front());
+// Serial.print("Moving average:  ");
+ //Serial.println(-Moving_average_Front());
+ delay(100);
+ Serial.print("Back distance:  ");
+ Serial.println(distance_Rear());
+}
+/*  
+    //EncoderBack_loop(); 
+    float Enc_back =  EncoderBack_loop();
+    float Enc_front = EncoderFront_loop();
+    float prev_Enc_front = 0;
+    float prev_Enc_back = 0;
+    prev_Enc_back = Enc_back;
+    prev_Enc_front = Enc_front;
+    int new_Enc_back = 0;
+    int new_Enc_front = 0;
+    Serial.print("This is the back encoder distance:  ");
+    Serial.println(Enc_back);
+    Serial.print("This is the front encoder distnace:  " );
+    Serial.println(Enc_front);
+    
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-    MPU_loop();
-   // PID_loop();
-   //Ramp_movement();
-   // Encoder_loop();
-   //move_forward(150);
+    //MPU_loop();
+    //PID_loop();
+     float back_error = 0.87;
+     int go = 1;
+     
+if (Enc_back < 14.39*back_error)
+     {
+      move_forward(sssp);
+     }
+     else
+     {
+      Stop(sp);
+      Serial.print("Limit reached");
+      new_Enc_back = Enc_back - prev_Enc_back;
+      Serial.print("This is the new Encoder distance:  ");
+      Serial.println(new_Enc_back);
+        if (distance_Left() > 200)
+        {
+          move_left(sp);
+        }
+        else if (distance_Left() <= 200) 
+        {
+         Stop(sp);
+        }
+     
+     } 
+  
+     
+
+
     
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
 
   
-  int center = 0;
- 
+  int center = 1;
+}
+ /*
   while (center == 0){
     int Stage_adv = 0;
     
-    Serial.println("Reading IR values"); 
+    //Serial.println("Reading IR values"); 
     while (Stage_adv == 0){
           //Serial.print("AM I HERE");
-          Decode_loop(); 
+          //Decode_loop(); 
      /*if (Stage_number == 0)
      {
         A=0;
@@ -192,13 +248,14 @@ void loop()
         stage_adv = 1;
       }
       */
+      /*
      if(Stage_adv == 1)
      {
         A = 0;
         B = 0;
         C = 1; 
-        lcd.setCursor(0,1);  
-        lcd.print("001");
+        //lcd.setCursor(0,1);  
+        //lcd.print("001");
         //Stage_adv = 1;
         center = 1;
      }
@@ -207,8 +264,8 @@ void loop()
         A = 0;
         B = 1;
         C = 0;
-        lcd.setCursor(0,1);
-        lcd.print("010");
+        //lcd.setCursor(0,1);
+        //lcd.print("010");
         //Stage_adv = 1;
         center = 1;
       }
@@ -217,8 +274,8 @@ void loop()
         A = 0;
         B = 1;
         C = 1;
-        lcd.setCursor(0,1);
-        lcd.print("011");
+        //lcd.setCursor(0,1);
+        //lcd.print("011");
         //Stage_adv = 1;
         center = 1;
       }
@@ -227,8 +284,8 @@ void loop()
         A = 1;
         B = 0;
         C = 0;
-        lcd.setCursor(0,1);
-        lcd.print("100");
+        //lcd.setCursor(0,1);
+        //lcd.print("100");
         //Stage_adv = 1;
         center = 1;     
       }
@@ -237,8 +294,8 @@ void loop()
        A = 1;
        B = 0;
        C = 1; 
-       lcd.setCursor(0,1);
-       lcd.print("101");
+       //lcd.setCursor(0,1);
+       //lcd.print("101");
        //Stage_adv = 1;
        center = 1;
       }
@@ -247,8 +304,8 @@ void loop()
         A = 1;
         B = 1;
         C = 0;
-        lcd.setCursor(0,1);
-        lcd.print("110");
+        //lcd.setCursor(0,1);
+        //lcd.print("110");
         //Stage_adv = 1;
         center = 1;
       }
@@ -262,13 +319,14 @@ void loop()
         stage_adv = 1;
       }
       */
+    /*
     Stage_adv = 0;
     }
    Serial.print("Leaving loop");
    center = 1;
   }
-
-  
+*/
+ /* 
   while(center == 1 )
   {
   Centering();        // First Centering operation to make sure it is located on IR sensor
@@ -426,5 +484,6 @@ void loop()
   }
 }
 */
+
 
 

@@ -34,6 +34,9 @@ public:
         P[1][0] = 0;
         P[1][1] = 0;
     };
+    
+    
+    
     // The angle should be in degrees and the rate should be in degrees per second and the delta time in seconds
     double getAngle(double newAngle, double newRate, double dt) {
         // KasBot V2  -  Kalman filter module - http://www.x-firm.com/?page_id=145
@@ -77,7 +80,11 @@ public:
 
         return angle;
     };
+    
+    
     void setAngle(double newAngle) { angle = newAngle; }; // Used to set angle, this should be set as the starting angle
+    
+    
     double getRate() { return rate; }; // Return the unbiased rate
 
     /* These are used to tune the Kalman filter */
@@ -106,3 +113,4 @@ private:
 };
 
 #endif
+

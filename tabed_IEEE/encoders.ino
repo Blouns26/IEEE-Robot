@@ -7,10 +7,10 @@
 //   Low Performance:  neither pin has interrupt capability
 
 //Left Encoder
-Encoder frontEnc(18, 24);
+Encoder frontEnc(19, 24);
 
 //Right Encoder
-Encoder backEnc(19,22);
+Encoder backEnc(18,22);
 
 
 
@@ -18,13 +18,11 @@ Encoder backEnc(19,22);
 long oldPositionfront  = -999;
 long oldPositionback = -999;
 
-void Encoder_loop() {
-  long newPositionfront = frontEnc.read();
-  long newPositionback = backEnc.read();
+float EncoderFront_loop(){
+  float newPositionfront = frontEnc.read();
   float Total_revsfront = (-newPositionfront/1920.0);
   float totaldistancefront = Total_revsfront * 12.385433;
-  float Total_revsback = (newPositionback/1920.0);
-  float totaldistanceback = Total_revsback * 12.385433;
+  
   
   if (newPositionfront != oldPositionfront) {
      oldPositionfront = newPositionfront;
@@ -36,7 +34,13 @@ void Encoder_loop() {
      Serial.print(-newPositionfront/1920.0);
      Serial.print("\t");
   }
- 
+  return totaldistancefront;
+}
+float EncoderBack_loop(){
+  float newPositionback = backEnc.read();
+  float Total_revsback = (newPositionback/1920.0);
+  float totaldistanceback = Total_revsback * 12.385433;
+  
   
   if (newPositionback != oldPositionback){
     oldPositionback = newPositionback;
@@ -49,6 +53,7 @@ void Encoder_loop() {
     Serial.print(newPositionback/1920.0);
     Serial.print("\t");
   }
-  
+  return totaldistanceback;
 }
+
 

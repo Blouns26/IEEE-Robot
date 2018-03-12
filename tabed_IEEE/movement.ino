@@ -104,7 +104,7 @@ void Ramp_movement()
     while (y ==0)
     {
       MPU_loop();
-      if (kalAngleX < 7)
+      if (kalAngleX < 8)
         {
           Serial.println("starting to move up ramp");
           Serial.println(kalAngleX);
@@ -112,14 +112,14 @@ void Ramp_movement()
           move_backward(sp);  
         }
       
-       else if (kalAngleX >= 7)
+       else if (kalAngleX >= 8)
         {
           for (int i = 0; i < 1; i ++)
           { 
             Serial.print("Setting up to move up ramp");
             move_forward(ssp);
             i = i++;
-            delay(500);
+            delay(200);
             Stop(sp);
             y = 1;
           }
@@ -215,14 +215,15 @@ void codemoveA(){
  }
 }
 
+
 void codemoveB()
 {
   Serial.println("Starting codemoveB function");
   
   int x =0;
-  int y =0;
   while(x==0)
   {
+    int y=0;
     if (B==0)
     {
       if (distance_Left() > 260)
@@ -232,9 +233,25 @@ void codemoveB()
       else if (distance_Left() <= 260 )
       {
       Stop(sp);
-      x=1;
+      delay(500);
       }
+      while (y==0)
+      {
+        if (distance_Front() > 900)
+        {
+          move_forward(sp);
+          Stop(sp);
+        }
+        else if (distance_Front() < 870)
+        {
+          move_backward(sp);
+          Stop(sp);
+          
+        }
+       }
+       
     }
+   
    else if (B==1)
    {
     if (distance_Right() > 260)
@@ -244,6 +261,7 @@ void codemoveB()
     else if (distance_Right() <= 260 )
     {
       Stop(sp);
+      delay(500);
       x=1;
     }
    }
@@ -318,6 +336,7 @@ void chestmove()
      {
       Serial.print("Stopping at chest");
       Stop(sp);
+      delay(1000);
       chest_exit = 1;
      } 
      
@@ -360,7 +379,6 @@ void distance_test()
   int flag_exit = 0;
   while (flag_exit == 0)
   {
-    Encoder_loop();
     if (distance_Left()> 300)
     {
       Serial.println("Moving left");
@@ -392,9 +410,9 @@ void move_forward(int sp)
   motor1->setSpeed(sp+3);
   motor2->run(FORWARD);
   motor2->setSpeed(sp);                              
-  motor3->run(FORWARD);
+  motor3->run(BACKWARD);
   motor3->setSpeed(sp);
-  motor4->run(BACKWARD);
+  motor4->run(FORWARD);
   motor4->setSpeed(sp);
 }
 // motors 1 and 4 are inverse driections
@@ -404,9 +422,9 @@ void move_backward(int sp)
   motor1->setSpeed(sp+3);
   motor2->run(BACKWARD);
   motor2->setSpeed(sp);
-  motor3->run(BACKWARD);
+  motor3->run(FORWARD);
   motor3->setSpeed(sp);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
   motor4->setSpeed(sp);
 }
 // motors 1 and 4 are inveresed directions
@@ -440,9 +458,9 @@ void move_diag_right(int sp)
   motor1->setSpeed(sp+3);
   motor2->run(FORWARD);
   motor2->setSpeed(sp);
-  motor3->run(RELEASE);
+  motor3->run(BACKWARD);
   motor3->setSpeed(sp);
-  motor4->run(BACKWARD);
+  motor4->run(RELEASE);
   motor4->setSpeed(sp);
 }
 //motors 1 and 4 are inversed
@@ -452,22 +470,22 @@ void move_diag_left(int sp)
   motor1->setSpeed(sp+3);
   motor2->run(RELEASE);
   motor2->setSpeed(sp);
-  motor3->run(FORWARD);
+  motor3->run(RELEASE);
   motor3->setSpeed(sp);
-  motor4->run(RELEASE);
+  motor4->run(FORWARD);
   motor4->setSpeed(sp);  
 }
 
 void Stop(int sp)
 {
-  motor1->run(RELEASE);
-  motor1->setSpeed(sp);
-  motor2->run(RELEASE);
-  motor2->setSpeed(sp);
-  motor3->run(RELEASE);
-  motor3->setSpeed(sp);
-  motor4->run(RELEASE);
-  motor4->setSpeed(sp);  
+  motor1->run(BACKWARD);
+  motor1->setSpeed(0);
+  motor2->run(FORWARD);
+  motor2->setSpeed(0);
+  motor3->run(BACKWARD);
+  motor3->setSpeed(0);
+  motor4->run(FORWARD);
+  motor4->setSpeed(0);  
 }
 //motors 1 and 4 are inversed
 void square_left(int sp)
@@ -503,11 +521,12 @@ void move_backward_ramp()
   motor1->setSpeed(rsp);
   motor2->run(BACKWARD);
   motor2->setSpeed(rsp);
-  motor3->run(BACKWARD);
+  motor3->run(FORWARD);
   motor3->setSpeed(rsp);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
   motor4->setSpeed(rsp);
 }
+
 
 
 

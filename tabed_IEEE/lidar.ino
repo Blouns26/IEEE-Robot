@@ -1,20 +1,31 @@
-#define HIGH_ACCURACY
+//#define HIGH_ACCURACY
 #define LONG_RANGE
 
 /////////Sensor Reading Function////////////
 
 int distance_Front(){
+  long unfiltered_distance_Front;
   long distance_Front;
   //Serial.print(sensor.readRangeContinuousMillimeters());
   if (Sensor1.timeoutOccurred()) { Serial.print("TIMEOUT");}
-  distance_Front = Sensor1.readRangeContinuousMillimeters();
+  unfiltered_distance_Front = Sensor1.readRangeContinuousMillimeters();
+  if (unfiltered_distance_Front < 2000)
+  {
+    distance_Front = unfiltered_distance_Front;
+  }
   //Serial.println();
  return distance_Front;
 }
 int distance_Rear(){
   long distance_Rear;
+  long unfiltered_distance_Rear;
+  
   if (Sensor2.timeoutOccurred()) { Serial.print("TIMEOUT");}
-  distance_Rear = Sensor2.readRangeContinuousMillimeters();
+  unfiltered_distance_Rear = Sensor2.readRangeContinuousMillimeters();
+  if(unfiltered_distance_Rear < 2000)
+  {
+    distance_Rear = unfiltered_distance_Rear;
+  }
   return distance_Rear;
 }
 int distance_Right(){
@@ -90,28 +101,26 @@ void VL53L0X_setup()
   Sensor6.setTimeout(500);
 
   #if defined LONG_RANGE
+      Sensor1.setSignalRateLimit(0.1);
+      Sensor2.setSignalRateLimit(0.1);
+      Sensor3.setSignalRateLimit(0.1);
+      Sensor4.setSignalRateLimit(0.1);
       // increase laser pulse periods (defaults are 14 and 10 PCLKs)
-      //Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 21);
-      //Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 16);
-      Sensor2.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 14);
-      Sensor2.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 10);
-      Sensor3.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 19);
-      Sensor3.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 15);
-      Sensor4.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 14);
-      Sensor4.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 10);
+      Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+      Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+      Sensor2.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+      Sensor2.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+      Sensor3.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+      Sensor3.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+      Sensor4.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+      Sensor4.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
   #endif
   
  // #if defined HIGH_ACCURACY
  //   Increase timing budget to 20 ms (defaukt is about 33 ms)
  //   Sensor1.setMeasurementTimingBudget(200000);
  // #endif
-  /*#if defined LONG_RANGE
-    // lower the return signal rate limit (default is 0.25 MCPS)
-    Sensor1.setSignalRateLimit(0.1);
-    // increase laser pulse periods (defaults are 14 and 10 PCLKS)
-    Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
-    Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange,14);
-   #endif*/
+ 
   // Start continuous back-to-back mode (take readings as
   // fast as possible).  To use continuous timed mode
   // instead, provide a desired inter-measurement period in
@@ -139,4 +148,5 @@ void VL53L0X_Loop(){
   Serial.print(Sensor6.readRangeContinuousMillimeters());
   Serial.println();
 }
+
 
