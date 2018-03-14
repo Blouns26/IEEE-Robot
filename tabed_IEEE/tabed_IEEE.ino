@@ -172,7 +172,8 @@ void loop()
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
 
-  
+  char F[5]; //initialize variable to store F, which is the IR values
+  Serial.readBytes(F,5); //Reads F values
   int center = 0;
  
   while (center == 0){
