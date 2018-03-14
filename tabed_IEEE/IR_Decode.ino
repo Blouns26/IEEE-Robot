@@ -11,11 +11,14 @@ int a = 0;
 int b = 0;
 int c = 0;
 int stage[2] = {0};
-int F = 0;
+//int F = 0; Pretty sure but not positive that we need to make F a char data type
+char F[3] = 0;
 
 //IRrecvPCI myReceiver(18);//pin number for the receiver
-
-
+void setup() 
+{
+  Serial.begin(9600);
+}
 
 int Decode_loop() 
 {
@@ -88,6 +91,12 @@ int Decode_loop()
   } 
   Serial.print("This is the value of F: "); Serial.println(F);
   
+<<<<<<< HEAD
   return F;
 }*/
 
+=======
+  //return F; Don't think we need this anymore since we arent technically passing values in a function anymore.
+  Serial.write(F,5); //Writing F to other arduino, 5 is pin number
+}
+>>>>>>> f7657ef398aa81c50b8f197db8df9b6a7e262e4f

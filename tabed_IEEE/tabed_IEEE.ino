@@ -227,10 +227,17 @@ if (Enc_back < 14.39*back_error)
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
 
+<<<<<<< HEAD
   
   int center = 1;
 }
  /*
+=======
+  char F[5]; //initialize variable to store F, which is the IR values
+  Serial.readBytes(F,5); //Reads F values
+  int center = 0;
+ 
+>>>>>>> f7657ef398aa81c50b8f197db8df9b6a7e262e4f
   while (center == 0){
     int Stage_adv = 0;
     
