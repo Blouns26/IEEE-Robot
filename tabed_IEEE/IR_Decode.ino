@@ -10,7 +10,8 @@ int a = 0;
 int b = 0;
 int c = 0;
 int stage[2] = {0};
-int F = 0;
+//int F = 0; Pretty sure but not positive that we need to make F a char data type
+char F[3] = 0;
 
 //IRrecvPCI myReceiver(18);//pin number for the receiver
 void setup() 
