@@ -13,8 +13,10 @@ int stage[2] = {0};
 int F = 0;
 
 //IRrecvPCI myReceiver(18);//pin number for the receiver
-
-
+void setup() 
+{
+  Serial.begin(9600);
+}
 
 int Decode_loop() 
 {
@@ -87,5 +89,6 @@ int Decode_loop()
   } 
   Serial.print("This is the value of F: "); Serial.println(F);
   
-  return F;
+  //return F; Don't think we need this anymore since we arent technically passing values in a function anymore.
+  Serial.write(F,5); //Writing F to other arduino, 5 is pin number
 }
