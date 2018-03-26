@@ -19,6 +19,7 @@ int b = 0;
 int c = 0;
 int stage[2] = {0};
 int F = 0;
+char str[3];
 
 IRrecvPCI myReceiver(18);//pin number for the receiver
 
@@ -31,14 +32,22 @@ void setup(){
   // set up the LCD's number of columns and rows:
   lcd.begin(16,2);
   // Print a message to the LCD.
-  lcd.print("waiting");
+  lcd.print("Waiting 4 Map");
   
   }
 
 void loop() 
 {
+   int center = 0;
+   while (center == 0)
+   {
+    
+    int Stage_adv = 0;
+    
    //Continue looping until you get a complete signal received   
   if (myReceiver.getResults()) { 
+    
+  }
     //Serial.println(F("Do a cut-and-paste of the following lines into the "));
     //Serial.println(F("designated location in rawSend.ino"));
     //Serial.print(F("\n#define RAW_DATA_LEN "));
@@ -90,22 +99,111 @@ void loop()
         stage[2] = 0;
       }
     }
-     for (int i = 0; i <= 2; i++)
+    else if (sizeof(recGlobal.recvBuffer) < 20)
     {
-       
-       //Serial.print(stage[i]);
-     }
-       //Serial.print("\n");
+      lcd.setCursor(0,1);
+      lcd.print("Error in code");
+    }
     
      F = (stage[2])+(stage[1]*(2))+(stage[0]*(4));
      //Serial.print("This is F: "); Serial.println(F);
      Serial.print(stage[0]);Serial.print('\t');Serial.print(stage[1]);Serial.print('\t'); Serial.println(stage[2]);
      //delay(10);
     
-    myReceiver.enableIRIn();      //Restart receiver
+   
+   Serial.print("This is the value of F: "); Serial.println(F);
+   //delay(100);
+   //itoa(F, str, 10);
+   Serial.print("This is the value to send:  ");
+   Serial.println(str);
+   Serial3.write(F+48);
+   //delay(1000);
+   
+    
+    //Serial.println("Reading IR values"); 
+    if (F == 0)
+      {
+        A=0;
+        B=0;
+        C=0;
+        lcd.setCursor(0,1);
+        lcd.print("000");
+        Stage_adv = 1;
+        center = 0;
+      }
+      if(F == 1)
+      {
+        A = 0;
+        B = 0;
+        C = 1; 
+        lcd.setCursor(0,1);  
+        lcd.print("001");
+        Stage_adv = 1;
+        center = 1;
+     }
+      else if(F == 2)
+      {
+        A = 0;
+        B = 1;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("010");
+        //Stage_adv = 1;
+        center = 1;
+      }
+      else if(F == 3)
+      {
+        A = 0;
+        B = 1;
+        C = 1;
+        lcd.setCursor(0,1);
+        lcd.print("011");
+        //Stage_adv = 1;
+        center = 1;
+      }
+      else if(F == 4)
+      {
+        A = 1;
+        B = 0;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("100");
+        //Stage_adv = 1;
+        center = 1;     
+      }
+      else if (F == 5)
+      {
+       A = 1;
+       B = 0;
+       C = 1; 
+       lcd.setCursor(0,1);
+       lcd.print("101");
+       //Stage_adv = 1;
+       center = 1;
+      }
+      else if (F == 6)
+      {
+        A = 1;
+        B = 1;
+        C = 0;
+        lcd.setCursor(0,1);
+        lcd.print("110");
+        //Stage_adv = 1;
+        center = 1;
+      }
+      else if (F == 7)
+      {
+        A = 1;
+        B = 1;
+        C = 1;
+        lcd.setCursor(0,1);
+        lcd.print("111");
+        Stage_adv = 1;
+      }
+     
+   myReceiver.enableIRIn();      //Restart receiver
+   
   } 
-  Serial.print("This is the value of F: "); Serial.println(F);
-  delay(500);
-  Serial3.print(F);
+  
 }
 

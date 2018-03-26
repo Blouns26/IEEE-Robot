@@ -11,11 +11,8 @@
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
 #include <Encoder.h>
 #include <IRLibRecvPCI.h>
-//#include <LiquidCrystal.h>
 
-//LiquidCrystal lcd(8,9,4,5,6,7);
-
-#define RESTRICT_PITCH // Comment out to restrict roll to Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+#define RESTRICT_PITCH // Comment out to restrict roll to Ã‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
 /*Kalman Filter*/
 Kalman kalmanX; // Create the Kalman instances
@@ -32,8 +29,6 @@ double kalAngleX, kalAngleY; // Calculated angle using a Kalman filter
 
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
-
-//IRrecvPCI myReceiver(18);//pin number for the receiver
 
 
 
@@ -83,8 +78,8 @@ Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
 /////////////////////////////////////////////////////////////////////////
 
 /*Speed Variables*/
-int rsp = 135;
-int fsp = 155;
+int rsp = 100;
+int fsp = 120;
 int brsp = 75;
 int sp = 50;//75
 int ssp = 40;
@@ -103,7 +98,7 @@ int A = 0;
 int B = 0;
 int C = 0;
 
-
+char str[3];
 //////////////////////////////////////////
 ///////////SETUP LOOP/////////////////////
 //////////////////////////////////////////
@@ -112,23 +107,17 @@ void setup() {
 
 
 
-  Serial.begin(9600);// set up Serial library at 9600 bps  
-  Serial3.begin(9600);
+  Serial.begin(9600);    // set up Serial at 9600 bps  
+  Serial3.begin(9600);   // set up Serial3 at 9600 bps
   AFMS.begin();
-  //myReceiver.enableIRIn(); // Start the receiver
-  //Serialprintln(F("Ready to receive IR signals"));
-  // set up the LCD's number of columns and rows:
-  //lcd.begin(16,2);
-  // Print a message to the LCD.
-  //lcd.print("waiting");
-   //MPU_setup();
+  MPU_setup();
   //PID_setup();
+
 ///////////////////////////////////////
 //////Time Of flight Sensor Setup//////
 ///////////////////////////////////////
- 
-     VL53L0X_setup();
- 
+
+  VL53L0X_setup();
 
 ////////////////////////////////////////
 /////////////Motor Setup////////////////
@@ -164,177 +153,101 @@ void setup() {
 
 void loop() 
 {
- //VL53L0X_Loop();
- Serial.print("Front distance:  ");
- Serial.println(distance_Front());
-// Serial.print("Moving average:  ");
- //Serial.println(-Moving_average_Front());
- delay(100);
- Serial.print("Back distance:  ");
- Serial.println(distance_Rear());
-}
-/*  
-    //EncoderBack_loop(); 
-    float Enc_back =  EncoderBack_loop();
-    float Enc_front = EncoderFront_loop();
-    float prev_Enc_front = 0;
-    float prev_Enc_back = 0;
-    prev_Enc_back = Enc_back;
-    prev_Enc_front = Enc_front;
-    int new_Enc_back = 0;
-    int new_Enc_front = 0;
-    Serial.print("This is the back encoder distance:  ");
-    Serial.println(Enc_back);
-    Serial.print("This is the front encoder distnace:  " );
-    Serial.println(Enc_front);
-    
+ 
+    //VL53L0X_Loop();     
     Moving_average_Rear();
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
     //MPU_loop();
     //PID_loop();
-     float back_error = 0.87;
-     int go = 1;
      
-if (Enc_back < 14.39*back_error)
-     {
-      move_forward(sssp);
-     }
-     else
-     {
-      Stop(sp);
-      Serial.print("Limit reached");
-      new_Enc_back = Enc_back - prev_Enc_back;
-      Serial.print("This is the new Encoder distance:  ");
-      Serial.println(new_Enc_back);
-        if (distance_Left() > 200)
-        {
-          move_left(sp);
-        }
-        else if (distance_Left() <= 200) 
-        {
-         Stop(sp);
-        }
-     
-     } 
-  
-     
-
+   
+    
 
     
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
 
-<<<<<<< HEAD
-  
-  int center = 1;
-}
- /*
-=======
-  char F[5]; //initialize variable to store F, which is the IR values
-  Serial.readBytes(F,5); //Reads F values
-  int center = 0;
- 
->>>>>>> f7657ef398aa81c50b8f197db8df9b6a7e262e4f
-  while (center == 0){
-    int Stage_adv = 0;
+int center = 0;
+while (center ==0){
     
-    //Serial.println("Reading IR values"); 
-    while (Stage_adv == 0){
-          //Serial.print("AM I HERE");
-          //Decode_loop(); 
-     /*if (Stage_number == 0)
-     {
-        A=0;
-        B=0;
-        C=0;
-        lcd.setCursor(0,1);
-        lcd.print("000");
-        stage_adv = 1;
-      }
-      */
-      /*
-     if(Stage_adv == 1)
-     {
-        A = 0;
-        B = 0;
-        C = 1; 
-        //lcd.setCursor(0,1);  
-        //lcd.print("001");
-        //Stage_adv = 1;
-        center = 1;
-     }
-      else if(Stage_adv == 2)
-      {
-        A = 0;
-        B = 1;
-        C = 0;
-        //lcd.setCursor(0,1);
-        //lcd.print("010");
-        //Stage_adv = 1;
-        center = 1;
-      }
-      else if(Stage_adv == 3)
-      {
-        A = 0;
-        B = 1;
-        C = 1;
-        //lcd.setCursor(0,1);
-        //lcd.print("011");
-        //Stage_adv = 1;
-        center = 1;
-      }
-      else if(Stage_adv == 4)
+    int Stage_adv = 0;
+    Serial.println("Reading data");
+    Serial3.readBytes(str,1); 
+    delay(100);
+    Serial.print("This is the first read: ");
+    Serial.println(str);
+      if (str[0] == '7')
       {
         A = 1;
-        B = 0;
-        C = 0;
-        //lcd.setCursor(0,1);
-        //lcd.print("100");
-        //Stage_adv = 1;
-        center = 1;     
-      }
-      else if (Stage_adv == 5)
-      {
-       A = 1;
-       B = 0;
-       C = 1; 
-       //lcd.setCursor(0,1);
-       //lcd.print("101");
-       //Stage_adv = 1;
+        B = 1;
+        C = 1;
+        //Serial.print(a), Serial.print(b), Serial.print(c);
        center = 1;
       }
-      else if (Stage_adv == 6)
-      {
-        A = 1;
-        B = 1;
-        C = 0;
-        //lcd.setCursor(0,1);
-        //lcd.print("110");
-        //Stage_adv = 1;
-        center = 1;
-      }
-      /*else if (Stage_adv == 7)
-      {
-        A = 1;
-        B = 1;
-        C = 1;
-        lcd.setCursor(0,1);
-        lcd.print("111");
-        stage_adv = 1;
-      }
-      */
-    /*
-    Stage_adv = 0;
+      
+    if (str[0] == '6')
+   {
+    A = 0;
+    B = 1;
+    C = 1;
+    //Serial.print(a), Serial.print(b), Serial.print(c);
+    center = 1;
+    }if (str[0] == '5')
+   {
+    A = 1;
+    B = 0;
+    C = 1;
+    //Serial.print(a), Serial.print(b), Serial.print(c);
+    center = 1;
     }
-   Serial.print("Leaving loop");
-   center = 1;
-  }
-*/
- /* 
-  while(center == 1 )
+    if (str[0] == '4')
+    {
+      A = 0;
+      B = 0;
+      C = 1;
+      //Serial.print(a), Serial.print(b), Serial.print(c);
+      center = 1;
+    }
+    if (str[0] == '3')
+    {
+      A = 1;
+      B = 1;
+      C = 0;
+      //Serial.print(a), Serial.print(b), Serial.print(c);
+      center = 1;
+    } 
+    if (str[0] == '2')
+    {
+      A = 0;
+      B = 1;
+      C = 0;
+      //Serial.print(a), Serial.print(b), Serial.print(c);
+      center = 1;
+    }
+    if (str[0] == '1')
+    {
+      A = 1;
+      B = 0;
+      C = 0;
+      //Serial.print(a), Serial.print(b), Serial.print(c);
+      center = 1;
+    }
+    if (str[0] == '0')
+    {
+      A = 0;
+      B = 0;
+      C = 0;
+      //Serial.print(a), Serial.print(b), Serial.print(c);
+      
+      center = 1;
+    }
+ 
+  center = 1;
+}
+while(center == 1 )
   {
   Centering();        // First Centering operation to make sure it is located on IR sensor
   center=2;
@@ -363,9 +276,11 @@ if (Enc_back < 14.39*back_error)
    // }   
   center=4;
   }
+  
   move_forward(sssp);                   // First move down the ramp
   delay(3000);
   Stop(sp); 
+  Serial.print("2nd cetner operation");
   Centering2();                         // Center operation to make sure it is now alligned with the bottom walls
   delay(1000);
 
@@ -374,7 +289,9 @@ if (Enc_back < 14.39*back_error)
   /////////////////////////////////////////////////////////////////////////////
   while (center==4)
   {
-  codemoveB();                          // 2nd IR value B is used to determine which location is next for stage 2
+  codemoveB();    // 2nd IR value B is used to determine which location is next for stage 2
+  //move_forward(sp);
+  delay(1000);
   center = 5;
   }
   
@@ -420,13 +337,15 @@ if (Enc_back < 14.39*back_error)
    while (z == 0)
     {     
        Serial.println("Moving to Ramp");
-      if (Moving_average_Front() < 900)
+      if (distance_Front() < 1000)
       {  
         move_backward(ssp);
-        Serial.print(Moving_average_Front()|| millis() < (time_now + period));
+        Serial.println("Moving backward");
+        //Serial.print(Moving_average_Front()|| millis() < (time_now + period));
         if (distance_Front() >= 900)
         {
-          Serial.print(Moving_average_Front());
+          Serial.print(distance_Front());
+          Serial.println("distance front is greater than 1000");
           Stop(sp);
           Centering2();
           z = 1;
@@ -434,8 +353,7 @@ if (Enc_back < 14.39*back_error)
       }
         
     }
-    
-    Ramp_movement();
+    Serial.println("Starting code to go up ramp");
     center = 9;
   }
   ///////////////////////////////////////////////////////////////////////////////
@@ -443,6 +361,7 @@ if (Enc_back < 14.39*back_error)
   ///////////////////////////////////////////////////////////////////////////////
   while (center == 9)
   {
+    Serial.println("Moving up ramp");
     Ramp_movement();
     center = 10;
   }
@@ -456,41 +375,14 @@ if (Enc_back < 14.39*back_error)
     Stop(sp);
     center = 0;
   }
-  
-  
-  ////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////IR test////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////  
-  if (A == 0 || B == 0 || C == 0)
-  {
-    A = A+1;
-    B = B+1;
-    C = C+1;
-  }
-  else{
-    A = A-1;
-    B = B-1;
-    C = C-1; 
-  }
-  
+ 
 }
 
 ///////////////////////////////////////////////////////////////
 ////////////////////Code for testing only//////////////////////
 ///////////////////////////////////////////////////////////////
-/*
-   while (center == 0)
-  {
-    chestmove();
-    center = 1;
-  }
-  while (center == 1)
-  {
-  flagmove();
-  center = 2;
-  }
-}
-*/
+
+
 
 
 

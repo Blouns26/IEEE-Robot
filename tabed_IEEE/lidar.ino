@@ -101,10 +101,7 @@ void VL53L0X_setup()
   Sensor6.setTimeout(500);
 
   #if defined LONG_RANGE
-      Sensor1.setSignalRateLimit(0.1);
-      Sensor2.setSignalRateLimit(0.1);
-      Sensor3.setSignalRateLimit(0.1);
-      Sensor4.setSignalRateLimit(0.1);
+      
       // increase laser pulse periods (defaults are 14 and 10 PCLKs)
       Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
       Sensor1.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
@@ -148,5 +145,6 @@ void VL53L0X_Loop(){
   Serial.print(Sensor6.readRangeContinuousMillimeters());
   Serial.println();
 }
+
 
 

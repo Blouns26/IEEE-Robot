@@ -9,6 +9,7 @@ int Centering()
    {
       move_left(ssp);
       Serial.println("moving left");
+      Serial.print(distance_Right());
    }
    else if (distance_Left() < 525)
    {
@@ -104,7 +105,7 @@ void Ramp_movement()
     while (y ==0)
     {
       MPU_loop();
-      if (kalAngleX < 8)
+      if (kalAngleX > -4)
         {
           Serial.println("starting to move up ramp");
           Serial.println(kalAngleX);
@@ -112,7 +113,7 @@ void Ramp_movement()
           move_backward(sp);  
         }
       
-       else if (kalAngleX >= 8)
+       else if (kalAngleX <= -4)
         {
           for (int i = 0; i < 1; i ++)
           { 
@@ -130,7 +131,7 @@ void Ramp_movement()
          {   
             int previous_reading = 0;
             MPU_loop();
-            if (kalAngleX < 7)
+            if (kalAngleX > 0)
             {
             Serial.println("Moving up the ramp");
             move_backward_ramp();
@@ -138,17 +139,22 @@ void Ramp_movement()
             previous_reading = kalAngleX;
             }
             
-            if (previous_reading > 10 || distance_Rear() <= 190)
-          {
-            Serial.println("Reading back distance");
-            Serial.println(distance_Rear());
-            move_backward(sssp);
-            if (distance_Rear() < 100)
+            if (previous_reading < -15 || distance_Rear() <= 190 && distance_Rear() > 0)
             {
-            Stop(sp);
-            y = 2;
-            }    
-          }   
+              Serial.println("Reading back distance");
+              Serial.println(distance_Rear());
+              move_backward(sssp);
+              if (distance_Rear() < 100 && distance_Rear() > 0)
+              {
+                Stop(sp);
+                y = 2;
+              }    
+            else if (distance_Rear()<0)
+            {
+              Serial.print("Error with Lidar STOP!");
+              Stop(sp);
+            }
+            }   
          }
       }
      while (y == 2)
@@ -226,44 +232,12 @@ void codemoveB()
     int y=0;
     if (B==0)
     {
-      if (distance_Left() > 260)
-      {
-      move_diag_left(sp); 
-      }
-      else if (distance_Left() <= 260 )
-      {
-      Stop(sp);
-      delay(500);
-      }
-      while (y==0)
-      {
-        if (distance_Front() > 900)
-        {
-          move_forward(sp);
-          Stop(sp);
-        }
-        else if (distance_Front() < 870)
-        {
-          move_backward(sp);
-          Stop(sp);
-          
-        }
-       }
-       
+      move_topressure_left();  
     }
    
    else if (B==1)
    {
-    if (distance_Right() > 260)
-    {
-      move_diag_right(sp); 
-    }
-    else if (distance_Right() <= 260 )
-    {
-      Stop(sp);
-      delay(500);
-      x=1;
-    }
+    move_topressure_right();
    }
   }    
 }
@@ -372,7 +346,7 @@ void flagmove()
    }
   
 }
-void distance_test()
+/*void distance_test()
 {
   Serial.println("Starting distance test function");
   
@@ -399,32 +373,149 @@ void distance_test()
    
    }
   
+}*/
+
+
+void move_topressure_left()
+{
+    EncoderBack_loop(); 
+    float Enc_back =  EncoderBack_loop();
+    float Enc_front = EncoderFront_loop();
+    float prev_Enc_front = 0;
+    float prev_Enc_back = 0;
+    prev_Enc_back = Enc_back;
+    prev_Enc_front = Enc_front;
+    int new_Enc_back = 0;
+    int new_Enc_front = 0;
+    float back_error = 1;
+    int go = 1;
+    
+    //Serial.print("This is the back encoder distance:  ");
+    //Serial.println(Enc_back);
+    //Serial.print("This is the front encoder distnace:  " );
+    //Serial.println(Enc_front);
+    while (go ==1)
+    { 
+      float Enc_back =  EncoderBack_loop(); 
+    if (Enc_back < 14.39*back_error)
+     {
+      
+      EncoderBack_loop();
+      move_forward(sssp);
+      
+     }
+     else
+     {
+      Serial.print("Limit reached");
+      new_Enc_back = Enc_back - prev_Enc_back;
+      Serial.print("This is the new Encoder distance:  ");
+      Serial.println(new_Enc_back);
+      Stop(sp);
+      go = 0;
+     }
+    }
+
+    while (go == 0)
+    { 
+     if (distance_Left() > 200)
+        {
+          move_left(sp);
+        }
+        else if (distance_Left() <= 180) 
+        {
+         Stop(sp);
+         Serial.print("Stop for 5 sec");
+         delay(5000);
+        }
+     
+     }
+    
+    
 }
+
+void move_topressure_right()
+{
+    EncoderBack_loop(); 
+    float Enc_back =  EncoderBack_loop();
+    float Enc_front = EncoderFront_loop();
+    float prev_Enc_front = 0;
+    float prev_Enc_back = 0;
+    prev_Enc_back = Enc_back;
+    prev_Enc_front = Enc_front;
+    int new_Enc_back = 0;
+    int new_Enc_front = 0;
+    float back_error = 1;
+    int go = 1;
+    
+    //Serial.print("This is the back encoder distance:  ");
+    //Serial.println(Enc_back);
+    //Serial.print("This is the front encoder distnace:  " );
+    //Serial.println(Enc_front);
+    while (go ==1)
+    { 
+      float Enc_back =  EncoderBack_loop(); 
+    if (Enc_back < 14.39*back_error)
+     {
+      
+      EncoderBack_loop();
+      move_forward(sssp);
+      
+     }
+     else
+     {
+      Serial.print("Limit reached");
+      new_Enc_back = Enc_back - prev_Enc_back;
+      Serial.print("This is the new Encoder distance:  ");
+      Serial.println(new_Enc_back);
+      Stop(sp);
+      go = 0;
+     }
+    }
+
+    while (go == 0)
+    { 
+     if (distance_Right() > 200)
+        {
+          move_right(sp);
+        }
+        else if (distance_Right() <= 180) 
+        {
+         Stop(sp);
+         Serial.print("Stop for 5 sec");
+         delay(5000);
+        }
+     
+     }
+    
+    
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 //////////////////////////Motor direction setup//////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 // motors 1 and 4 are inverse directions                                                
 void move_forward(int sp)                                                                   
 {
-  motor1->run(BACKWARD);
+  motor1->run(FORWARD);
   motor1->setSpeed(sp+3);
-  motor2->run(FORWARD);
+  motor2->run(BACKWARD);
   motor2->setSpeed(sp);                              
-  motor3->run(BACKWARD);
+  motor3->run(FORWARD);
   motor3->setSpeed(sp);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
   motor4->setSpeed(sp);
 }
 // motors 1 and 4 are inverse driections
 void move_backward(int sp)
 {
-  motor1->run(FORWARD);
+  motor1->run(BACKWARD);
   motor1->setSpeed(sp+3);
-  motor2->run(BACKWARD);
+  motor2->run(FORWARD);
   motor2->setSpeed(sp);
-  motor3->run(FORWARD);
+  motor3->run(BACKWARD);
   motor3->setSpeed(sp);
-  motor4->run(BACKWARD);
+  motor4->run(FORWARD);
   motor4->setSpeed(sp);
 }
 // motors 1 and 4 are inveresed directions
@@ -454,49 +545,49 @@ void move_right(int sp)
 //motors 1 and 4 are inversed
 void move_diag_right(int sp)
 {
-  motor1->run(RELEASE);
-  motor1->setSpeed(sp+3);
-  motor2->run(FORWARD);
-  motor2->setSpeed(sp);
-  motor3->run(BACKWARD);
-  motor3->setSpeed(sp);
-  motor4->run(RELEASE);
-  motor4->setSpeed(sp);
-}
-//motors 1 and 4 are inversed
-void move_diag_left(int sp)
-{
-  motor1->run(BACKWARD);
+  motor1->run(FORWARD);
   motor1->setSpeed(sp+3);
   motor2->run(RELEASE);
   motor2->setSpeed(sp);
   motor3->run(RELEASE);
   motor3->setSpeed(sp);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
+  motor4->setSpeed(sp);
+}
+//motors 1 and 4 are inversed
+void move_diag_left(int sp)
+{
+  motor1->run(RELEASE);
+  motor1->setSpeed(sp+3);
+  motor2->run(BACKWARD);
+  motor2->setSpeed(sp);
+  motor3->run(FORWARD);
+  motor3->setSpeed(sp);
+  motor4->run(RELEASE);
   motor4->setSpeed(sp);  
 }
 
 void Stop(int sp)
 {
-  motor1->run(BACKWARD);
+  motor1->run(FORWARD);
   motor1->setSpeed(0);
-  motor2->run(FORWARD);
+  motor2->run(BACKWARD);
   motor2->setSpeed(0);
-  motor3->run(BACKWARD);
+  motor3->run(FORWARD);
   motor3->setSpeed(0);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
   motor4->setSpeed(0);  
 }
 //motors 1 and 4 are inversed
 void square_left(int sp)
 {
-  motor1->run(FORWARD);
+  motor1->run(BACKWARD);
   motor1->setSpeed(sp);
-  motor2->run(FORWARD);
+  motor2->run(BACKWARD);
   motor2->setSpeed(sp);
-  motor3->run(FORWARD);
+  motor3->run(BACKWARD);
   motor3->setSpeed(sp);
-  motor4->run(FORWARD);
+  motor4->run(BACKWARD);
   motor4->setSpeed(sp); 
   
 }
@@ -517,15 +608,16 @@ void square_right(int sp)
 
 void move_backward_ramp()
 {
-  motor1->run(FORWARD);
+  motor1->run(BACKWARD);
   motor1->setSpeed(rsp);
-  motor2->run(BACKWARD);
+  motor2->run(FORWARD);
   motor2->setSpeed(rsp);
-  motor3->run(FORWARD);
+  motor3->run(BACKWARD);
   motor3->setSpeed(rsp);
-  motor4->run(BACKWARD);
+  motor4->run(FORWARD);
   motor4->setSpeed(rsp);
 }
+
 
 
 

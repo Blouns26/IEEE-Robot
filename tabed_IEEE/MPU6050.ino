@@ -20,8 +20,8 @@ void MPU_setup() {
 
   i2cData[0] = 7; // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
   i2cData[1] = 0x00; // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
-  i2cData[2] = 0x00; // Set Gyro Full Scale Range to Â±250deg/s
-  i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to Â±2g
+  i2cData[2] = 0x00; // Set Gyro Full Scale Range to Ã‚Â±250deg/s
+  i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to Ã‚Â±2g
   while (i2cWrite(0x19, i2cData, 4, false)); // Write to all four registers at once
   while (i2cWrite(0x6B, 0x01, true)); // PLL with X axis gyroscope reference and disable sleep mode
 
@@ -40,7 +40,7 @@ void MPU_setup() {
   accZ = (i2cData[4] << 8) | i2cData[5];
 
   // Source: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf eq. 25 and eq. 26
-  // atan2 outputs the value of -Ï€ to Ï€ (radians) - see http://en.wikipedia.org/wiki/Atan2
+  // atan2 outputs the value of -Ã�â‚¬ to Ã�â‚¬ (radians) - see http://en.wikipedia.org/wiki/Atan2
   // It is then converted from radians to degrees
 #ifdef RESTRICT_PITCH // Eq. 25 and 26
   double roll  = atan2(accY, accZ) * RAD_TO_DEG;
@@ -75,7 +75,7 @@ void MPU_loop() {
   timer = micros();
 
   // Source: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf eq. 25 and eq. 26
-  // atan2 outputs the value of -Ï€ to Ï€ (radians) - see http://en.wikipedia.org/wiki/Atan2
+  // atan2 outputs the value of -Ã�â‚¬ to Ã�â‚¬ (radians) - see http://en.wikipedia.org/wiki/Atan2
   // It is then converted from radians to degrees
 #ifdef RESTRICT_PITCH // Eq. 25 and 26
   double roll  = atan2(accY, accZ) * RAD_TO_DEG;
@@ -172,6 +172,7 @@ void MPU_loop() {
   Serial.print("\r\n");
   delay(2);
 }
+
 
 
 
