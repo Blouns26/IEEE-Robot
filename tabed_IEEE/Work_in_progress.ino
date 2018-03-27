@@ -47,22 +47,22 @@ void square()
 ///////////////////////////////////////////////////////////////////////////////////////
 
 ///////Back sensor//////// 
-const int numReadings_rear = 5;
+const int numReadings_rear = 10;
 int readings_rear[numReadings_rear];    // the readings from the input
 int readIndex_rear = 0;            // the index of the current reading
 int total_rear =0;                 // the running total 
 ///////Left sensor///////
-const int numReadings_left = 5;
+const int numReadings_left = 10;
 int readings_left[numReadings_left];  // the readings from left input
 int readIndex_left = 0;               // the index of the current reading from left sensor      
 int total_left = 0;                   // the running total of the left sensor
 ///////Right sensor///////
-const int numReadings_right = 5;
+const int numReadings_right = 10;
 int readings_right[numReadings_right];
 int readIndex_right = 0;
 int total_right = 0;
 //////Front sensor////////
-const int numReadings_front = 5;
+const int numReadings_front = 10;
 int readings_front[numReadings_front];
 int readIndex_front = 0;
 int total_front = 0;
@@ -192,7 +192,7 @@ float elapsedTime, time, timePrev;
 int i;
 
 
-float PID, pwmBLeft, pwmFRight, error, previous_error, total_speed, desired_speed;
+float PID, SpFLeft, SpBRight, error, previous_error, total_speed, desired_speed;
 float pid_p=0;
 float pid_i=0;
 float pid_d=0;
@@ -229,8 +229,8 @@ void PID_loop() {
 to implement the PID with. That means that the x axis of the IMU has to be paralel to
 the balance*/
 
-/*First calculate the error between the desired angle and 
-*the real measured angle*/
+/*First calculate the error between the desired speed and 
+*the real measured speed*/
 error = total_speed - desired_speed;
     
 /*Next the proportional value of the PID is just a proportional constant
@@ -275,8 +275,8 @@ if(PID > 100)
 }
 
 /*Finnaly we calculate the PWM width. We sum the desired throttle and the PID value*/
-pwmFRight = throttle + PID;
-pwmBLeft = throttle - PID;
+SpBRight = throttle + PID;
+SpFLeft = throttle - PID;
 
 
 /*Once again we map the PWM values to be sure that we won't pass the min
@@ -284,22 +284,22 @@ and max values. Yes, we've already maped the PID values. But for example, for
 throttle value of 1300, if we sum the max PID value we would have 2300us and
 that will mess up the ESC.*/
 //Right
-if(pwmFRight < 100)
+if(SpBRight < 100)
 {
-  pwmFRight= 100;
+  SpBRight= 100;
 }
-if(pwmFRight > 200)
+if(SpBRight > 200)
 {
-  pwmFRight=200;
+  SpBRight=200;
 }
 //Left
-if(pwmBLeft < 100)
+if(SpFLeft < 100)
 {
-  pwmBLeft= 100;
+  SpFLeft= 100;
 }
-if(pwmBLeft > 200)
+if(SpFLeft > 200)
 {
-  pwmBLeft=200;
+  SpFLeft=200;
 }
 
 /*Finnaly using the servo function we create the PWM pulses with the calculated

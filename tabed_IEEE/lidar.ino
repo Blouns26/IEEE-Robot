@@ -30,14 +30,27 @@ int distance_Rear(){
 }
 int distance_Right(){
   long distance_Right;
+  long unfiltered_distance_Right;
+  
   if (Sensor3.timeoutOccurred()) { Serial.print("TIMEOUT");}
-  distance_Right = Sensor3.readRangeContinuousMillimeters();
+  unfiltered_distance_Right = Sensor3.readRangeContinuousMillimeters();
+  
+  if(unfiltered_distance_Right < 2000)
+  {
+    distance_Right = unfiltered_distance_Right;  
+  }
   return distance_Right;
 }
 int distance_Left(){
   long distance_Left;
+  long unfiltered_distance_Left;
   if (Sensor4.timeoutOccurred()) { Serial.print("TIMEOUT");}
-  distance_Left = Sensor4.readRangeContinuousMillimeters();
+  unfiltered_distance_Left = Sensor4.readRangeContinuousMillimeters();
+  
+  if(unfiltered_distance_Left < 2000)
+  {
+    distance_Left = unfiltered_distance_Left;
+  }
   return distance_Left;
 }
 

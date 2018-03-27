@@ -5,18 +5,18 @@ int Centering()
   int x=0;
   while( x==0)
   {
-   if (distance_Right() < 525)
+   if (Moving_average_Right() < 525)
    {
       move_left(ssp);
       Serial.println("moving left");
       Serial.print(distance_Right());
    }
-   else if (distance_Left() < 525)
+   else if (Moving_average_Left() < 525)
    {
       move_right(ssp);
       Serial.println("moving right");
    }
-   else if (distance_Right() >= 525 || distance_Left() >= 525)
+   else if (Moving_average_Right() >= 525 || Moving_average_Left() >= 525)
   {
       Serial.println("stop");
       Stop(ssp);
@@ -26,15 +26,15 @@ int Centering()
  }
  while (x==1)
  {
-     if( distance_Rear() > 135)
+     if( Moving_average_Rear() > 135)
      {
           move_backward(sssp);
      }
-     else if (distance_Rear() < 128) 
+     else if (Moving_average_Rear() < 128) 
      {
           move_forward(sssp);
      }
-     else if (distance_Rear() >=128 || distance_Rear() <=135)
+     else if (Moving_average_Rear() >=128 || Moving_average_Rear() <=135)
      {
          Stop(ssp);
          x=2;
@@ -53,13 +53,13 @@ int Centering2()
       
     while (y == 0)
     {
-      if (distance_Right() < 440)
+      if (Moving_average_Right() < 440)
       {
         move_left(ssp);
         Serial.println("moving left");
         
       } 
-      if (distance_Left() < 440)
+      if (Moving_average_Left() < 440)
       {
       move_right(ssp);
       Serial.println("moving right");
@@ -67,7 +67,7 @@ int Centering2()
       
       y=1;
      }
-     if (distance_Right() >= 445 && distance_Right() <=455)
+     if (Moving_average_Right() >= 445 && Moving_average_Right() <=455)
         {
           Serial.println("stop");
           Stop(ssp);
@@ -102,7 +102,7 @@ void Ramp_movement()
     Serial.println("Starting Ramp_Movement function");
     int y = 0;
     
-    while (y ==0)
+    while (y == 0)
     {
       MPU_loop();
       if (kalAngleX > -4)
@@ -156,13 +156,14 @@ void Ramp_movement()
             }
             }   
          }
-      }
+    
      while (y == 2)
      {
-      //Centering();
-      y == 2;
+      Centering();
+      Serial.print("Leaving Ramp loop");
+      y = 3;
      }
-    
+    }
 }
 
 
@@ -178,7 +179,7 @@ void codemoveA(){
   
   if (A==0){
   move_left(ssp);
-  if(distance_Left() <150){
+  if(Moving_average_Left() <150){
   move_left(sssp);
     if (Moving_average_Rear() > 150)
     {
@@ -188,9 +189,9 @@ void codemoveA(){
     {
       move_forward(sssp);
     }
-  if(distance_Left() <100){
+  if(Moving_average_Left() <100){
   move_left(18);
-  if(distance_Left() < 85){
+  if(Moving_average_Left() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -200,7 +201,7 @@ void codemoveA(){
   }
   else if (A==1){
    move_right(ssp);
-  if(distance_Right() <170){
+  if(Moving_average_Right() <170){
   move_right(sssp);
     if (Moving_average_Rear() > 190){
       move_backward(sssp);
@@ -208,9 +209,9 @@ void codemoveA(){
     else if (Moving_average_Rear() < 170){
       move_forward(sssp);
     }
-  if(distance_Right() <100){
+  if(Moving_average_Right() <100){
   move_right(18);
-  if(distance_Right() < 85){
+  if(Moving_average_Right() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -232,12 +233,14 @@ void codemoveB()
     int y=0;
     if (B==0)
     {
-      move_topressure_left();  
+      move_topressure_left();
+      x = 1;  
     }
    
    else if (B==1)
    {
     move_topressure_right();
+    x = 1;
    }
   }    
 }
@@ -251,7 +254,7 @@ void codemoveC(){
   
   if (C==0){
   move_left(ssp);
-  if(distance_Left() <150){
+  if(Moving_average_Left() <150){
   move_left(sssp);
     if (Moving_average_Rear() > 190)
     {
@@ -261,9 +264,9 @@ void codemoveC(){
     {
       move_forward(sssp);
     }
-  if(distance_Left() <100){
+  if(Moving_average_Left() <100){
   move_left(18);
-  if(distance_Left() < 85){
+  if(Moving_average_Left() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -273,7 +276,7 @@ void codemoveC(){
   }
   else if (C==1){
    move_right(ssp);
-  if(distance_Right() <170){
+  if(Moving_average_Right() <170){
   move_right(sssp);
     if (Moving_average_Rear() > 190){
       move_backward(sssp);
@@ -281,9 +284,9 @@ void codemoveC(){
     else if (Moving_average_Rear() < 170){
       move_forward(sssp);
     }
-  if(distance_Right() <100){
+  if(Moving_average_Right() <100){
   move_right(18);
-  if(distance_Right() < 85){
+  if(Moving_average_Right() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -301,12 +304,12 @@ void chestmove()
   while (chest_exit == 0)
   {
     
-    if (distance_Front() > 700)
+    if (Moving_average_Front() > 700)
       {
         Serial.println("Moving to chest");
         move_forward(sssp);
       }
-    else if (distance_Front() < 700)
+    else if (Moving_average_Front() < 700)
      {
       Serial.print("Stopping at chest");
       Stop(sp);
@@ -325,16 +328,16 @@ void flagmove()
   while (flag_exit == 0)
   {
     
-    if (distance_Front()> 300)
+    if (Moving_average_Front()> 300)
     {
       Serial.println("Moving to flag");
       move_forward(ssp);
-      if (distance_Front() < 300 && distance_Front() > 180) 
+      if (Moving_average_Front() < 300 && Moving_average_Front() > 180) 
       {
         move_forward(sssp);    
       }
     } 
-    else if (distance_Front() <= 100)
+    else if (Moving_average_Front() <= 100)
       {
         Serial.print("Stopping at flag");
         Stop(sp);
@@ -378,15 +381,14 @@ void flagmove()
 
 void move_topressure_left()
 {
-    EncoderBack_loop(); 
+    
+    EncoderBack_loop();
     float Enc_back =  EncoderBack_loop();
-    float Enc_front = EncoderFront_loop();
+    float Enc_front = EncoderFront_loop(); 
     float prev_Enc_front = 0;
     float prev_Enc_back = 0;
     prev_Enc_back = Enc_back;
     prev_Enc_front = Enc_front;
-    int new_Enc_back = 0;
-    int new_Enc_front = 0;
     float back_error = 1;
     int go = 1;
     
@@ -397,10 +399,13 @@ void move_topressure_left()
     while (go ==1)
     { 
       float Enc_back =  EncoderBack_loop(); 
-    if (Enc_back < 14.39*back_error)
+    if (new_Enc_back < 14.39*back_error)
      {
       
       EncoderBack_loop();
+      new_Enc_back = Enc_back - prev_Enc_back;
+      Serial.print("This is the New encoder reading");
+      Serial.println(new_Enc_back);
       move_forward(sssp);
       
      }
@@ -417,15 +422,16 @@ void move_topressure_left()
 
     while (go == 0)
     { 
-     if (distance_Left() > 200)
+     if (Moving_average_Left() > 200)
         {
           move_left(sp);
         }
-        else if (distance_Left() <= 180) 
+        else if (Moving_average_Left() <= 180) 
         {
          Stop(sp);
-         Serial.print("Stop for 5 sec");
-         delay(5000);
+         Serial.print("Stop for 1 sec");
+         delay(1000);
+         go = 2;
         }
      
      }
@@ -474,11 +480,11 @@ void move_topressure_right()
 
     while (go == 0)
     { 
-     if (distance_Right() > 200)
+     if (Moving_average_Right() > 200)
         {
           move_right(sp);
         }
-        else if (distance_Right() <= 180) 
+        else if (Moving_average_Right() <= 180) 
         {
          Stop(sp);
          Serial.print("Stop for 5 sec");
@@ -489,8 +495,21 @@ void move_topressure_right()
     
     
 }
+/*
+float EncZeroFront()
+{
+    EncoderBack_loop();
+    float Enc_front = EncoderFront_loop();
+    float prev_Enc_front = 0;
+    prev_Enc_front = Enc_front;
+    int new_Enc_front = 0;
+    new_Enc_front = Enc_front - prev_Enc_front;
+    Serial.print("This is the new Encoder distance:  ");
+    Serial.println(new_Enc_back);
 
-
+return new_Enc_front
+}
+*/
 /////////////////////////////////////////////////////////////////////////////
 //////////////////////////Motor direction setup//////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

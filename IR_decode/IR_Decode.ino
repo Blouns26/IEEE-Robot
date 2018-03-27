@@ -61,7 +61,7 @@ void loop()
     }
     //Serial.println(F("1000};"));//Add arbitrary trailing space
        
-    if ( sizeof(recvGlobal.recvBuffer) >= 20)
+    if ( sizeof(recvGlobal.recvBuffer) == 20)
     {
       int c = recvGlobal.recvBuffer[18];
       int b = recvGlobal.recvBuffer[16];
@@ -99,7 +99,7 @@ void loop()
         stage[2] = 0;
       }
     }
-    else if (sizeof(recGlobal.recvBuffer) < 20)
+    else if (sizeof(recvGlobal.recvBuffer) < 20)
     {
       lcd.setCursor(0,1);
       lcd.print("Error in code");

@@ -11,6 +11,7 @@
 #include "Kalman.h" // Source: https://github.com/TKJElectronics/KalmanFilter
 #include <Encoder.h>
 #include <IRLibRecvPCI.h>
+#include <Servo.h>
 
 #define RESTRICT_PITCH // Comment out to restrict roll to Ã‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 
@@ -30,6 +31,10 @@ double kalAngleX, kalAngleY; // Calculated angle using a Kalman filter
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
 
+/*Encoder Global Variables*/
+    int new_Enc_back = 0;
+    int new_Enc_front = 0;
+   
 
 
 ////////////////////////////////////////////////////////////
@@ -58,7 +63,7 @@ VL53L0X Sensor4;
 VL53L0X Sensor5;
 VL53L0X Sensor6;
 
-
+Servo linear;
 /////////////////////////////////////////////////////////////////////////
 ///////////////////////////MOTOR INITIALIZATION//////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -109,6 +114,7 @@ void setup() {
 
   Serial.begin(9600);    // set up Serial at 9600 bps  
   Serial3.begin(9600);   // set up Serial3 at 9600 bps
+  linear.attach(9);
   AFMS.begin();
   MPU_setup();
   //PID_setup();
@@ -260,6 +266,9 @@ while(center == 1 )
   {
   Serial.print("moving to button");
   codemoveA();                          // After the IR sensor is read, the first value is added to variable A
+  moveLinear(180);
+  delay(1000);
+  moveLinear(0);
   center=3;                             // This is the Movement for the first stage to get the key 
   }
   /////////////////////////////////////////////////////////////////////////
@@ -280,7 +289,7 @@ while(center == 1 )
   move_forward(sssp);                   // First move down the ramp
   delay(3000);
   Stop(sp); 
-  Serial.print("2nd cetner operation");
+  Serial.print("2nd center operation");
   Centering2();                         // Center operation to make sure it is now alligned with the bottom walls
   delay(1000);
 
@@ -290,8 +299,8 @@ while(center == 1 )
   while (center==4)
   {
   codemoveB();    // 2nd IR value B is used to determine which location is next for stage 2
-  //move_forward(sp);
   delay(1000);
+  Centering2();
   center = 5;
   }
   
