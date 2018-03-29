@@ -136,7 +136,7 @@ void loop()
    }
    else
    {
-    lcd.print("           ");
+    //lcd.print("           ");
     Serial3.write(F+48);
     Serial.println("Reading IR values"); 
     if (F == 0)
@@ -145,7 +145,7 @@ void loop()
         B=0;
         C=0;
         lcd.setCursor(0,1);
-        lcd.print("0          ");
+        lcd.print("0                               ");
         Stage_adv = 1;
         center = 0;
       }
@@ -155,7 +155,7 @@ void loop()
         B = 0;
         C = 1; 
         lcd.setCursor(0,1);  
-        lcd.print("1          ");
+        lcd.print("1                               ");
         Stage_adv = 1;
         center = 1;
      }
@@ -165,7 +165,7 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("2          ");
+        lcd.print("2                               ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -175,7 +175,7 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("3          ");
+        lcd.print("3                               ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -185,7 +185,7 @@ void loop()
         B = 0;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("4          ");
+        lcd.print("4                               ");
         //Stage_adv = 1;
         center = 1;     
       }
@@ -195,7 +195,7 @@ void loop()
        B = 0;
        C = 1; 
        lcd.setCursor(0,1);
-       lcd.print("5          ");
+       lcd.print("5                               ");
        //Stage_adv = 1;
        center = 1;
       }
@@ -205,7 +205,7 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("6          ");
+        lcd.print("6                               ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -215,7 +215,7 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("7          ");
+        lcd.print("7                               ");
         Stage_adv = 1;
       }
    }
@@ -229,6 +229,4 @@ void loop()
   } 
  
 }
-
-
 
