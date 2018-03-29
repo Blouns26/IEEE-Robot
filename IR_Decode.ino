@@ -17,7 +17,8 @@ int C = 0;
 int a = 0;
 int b = 0;
 int c = 0;
-int stage[2] = {0};
+int d = 0;
+int stage[3] = {0};
 int F = 0;
 char str[3];
 
@@ -66,9 +67,10 @@ void loop()
       int c = recvGlobal.recvBuffer[18];
       int b = recvGlobal.recvBuffer[16];
       int a = recvGlobal.recvBuffer[14];
+      int d = recvGlobal.recvBuffer[12];
       //Serial.print(A);Serial.print('\t');Serial.print(B);Serial.print('\t');Serial.print(C);Serial.print('\n');
       
-      if (a > 1000)
+      if (d > 1000)
       {
         //Serial.println('1');
         stage[0] = 1;
@@ -78,7 +80,7 @@ void loop()
         //Serial.println('0');
         stage[0] = 0;
       }
-      if (b > 1000)
+      if (a > 1000)
       {
         //Serial.println('1');
         stage[1] = 1;
@@ -88,7 +90,7 @@ void loop()
       //Serial.println('0');
       stage[1] = 0;
       }
-      if (c > 1000)
+      if (b > 1000)
       {
         //Serial.println('1');
         stage[2] = 1;
@@ -98,36 +100,52 @@ void loop()
         //Serial.println('0');
         stage[2] = 0;
       }
+      if (c > 1000)
+      {
+        //Serial.println('1');
+        stage[3] = 1;
+      }
+      else 
+      {
+        //Serial.println('0');
+        stage[3] = 0;
+      }
     }
-    else if (sizeof(recGlobal.recvBuffer) < 20)
+    else if (sizeof(recvGlobal.recvBuffer) < 20)
     {
       lcd.setCursor(0,1);
       lcd.print("Error in code");
     }
     
-     F = (stage[2])+(stage[1]*(2))+(stage[0]*(4));
+     F = (stage[3])+(stage[2]*(2))+(stage[1]*(4));
      //Serial.print("This is F: "); Serial.println(F);
-     Serial.print(stage[0]);Serial.print('\t');Serial.print(stage[1]);Serial.print('\t'); Serial.println(stage[2]);
+     Serial.print(stage[1]);Serial.print('\t');Serial.print(stage[2]);Serial.print('\t'); Serial.println(stage[3]);
      //delay(10);
     
    
    Serial.print("This is the value of F: "); Serial.println(F);
    //delay(100);
    //itoa(F, str, 10);
-   Serial.print("This is the value to send:  ");
-   Serial.println(str);
-   Serial3.write(F+48);
-   //delay(1000);
+   Serial.print("This is the value to send:  ");Serial.println(str);
+
+
    
-    
-    //Serial.println("Reading IR values"); 
+   if(stage[0] == 1)
+   {
+   lcd.print("positioning");
+   }
+   else
+   {
+    lcd.print("           ");
+    Serial3.write(F+48);
+    Serial.println("Reading IR values"); 
     if (F == 0)
       {
         A=0;
         B=0;
         C=0;
         lcd.setCursor(0,1);
-        lcd.print("000");
+        lcd.print("0          ");
         Stage_adv = 1;
         center = 0;
       }
@@ -137,7 +155,7 @@ void loop()
         B = 0;
         C = 1; 
         lcd.setCursor(0,1);  
-        lcd.print("001");
+        lcd.print("1          ");
         Stage_adv = 1;
         center = 1;
      }
@@ -147,7 +165,7 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("010");
+        lcd.print("2          ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -157,7 +175,7 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("011");
+        lcd.print("3          ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -167,7 +185,7 @@ void loop()
         B = 0;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("100");
+        lcd.print("4          ");
         //Stage_adv = 1;
         center = 1;     
       }
@@ -177,7 +195,7 @@ void loop()
        B = 0;
        C = 1; 
        lcd.setCursor(0,1);
-       lcd.print("101");
+       lcd.print("5          ");
        //Stage_adv = 1;
        center = 1;
       }
@@ -187,7 +205,7 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("110");
+        lcd.print("6          ");
         //Stage_adv = 1;
         center = 1;
       }
@@ -197,13 +215,20 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("111");
+        lcd.print("7          ");
         Stage_adv = 1;
       }
-     
-   myReceiver.enableIRIn();      //Restart receiver
+   }
    
+   
+
+   //delay(1000);
+     
+    //Restart receiver
+    myReceiver.enableIRIn(); 
   } 
-  
+ 
 }
+
+
 
