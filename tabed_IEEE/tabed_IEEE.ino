@@ -93,7 +93,6 @@ int sssp = 25;
 /*Encoder variable*/
 
 
-//int center = 0;
 int _decode = 0;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -165,7 +164,7 @@ void loop()
     Moving_average_Front();
     Moving_average_Left();
     Moving_average_Right();
-    //MPU_loop();
+    MPU_loop();
     //PID_loop();
      
    

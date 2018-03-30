@@ -9,7 +9,7 @@ int distance_Front(){
   //Serial.print(sensor.readRangeContinuousMillimeters());
   if (Sensor1.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Front = Sensor1.readRangeContinuousMillimeters();
-  if (unfiltered_distance_Front < 2000)
+  if (unfiltered_distance_Front < 2000 && unfiltered_distance_Front > 0)
   {
     distance_Front = unfiltered_distance_Front;
   }
@@ -22,7 +22,7 @@ int distance_Rear(){
   
   if (Sensor2.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Rear = Sensor2.readRangeContinuousMillimeters();
-  if(unfiltered_distance_Rear < 2000)
+  if(unfiltered_distance_Rear < 2000 && unfiltered_distance_Rear > 0)
   {
     distance_Rear = unfiltered_distance_Rear;
   }
@@ -35,7 +35,7 @@ int distance_Right(){
   if (Sensor3.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Right = Sensor3.readRangeContinuousMillimeters();
   
-  if(unfiltered_distance_Right < 2000)
+  if(unfiltered_distance_Right < 2000 && unfiltered_distance_Right > 0)
   {
     distance_Right = unfiltered_distance_Right;  
   }
@@ -47,7 +47,7 @@ int distance_Left(){
   if (Sensor4.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Left = Sensor4.readRangeContinuousMillimeters();
   
-  if(unfiltered_distance_Left < 2000)
+  if(unfiltered_distance_Left < 2000 && unfiltered_distance_Left > 0)
   {
     distance_Left = unfiltered_distance_Left;
   }

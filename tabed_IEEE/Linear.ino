@@ -12,7 +12,7 @@ void moveLinear(int Position){
   }
   else if(Position == 0)
   {
-  for (int pos = 150; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+  for (int pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
     linear.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
   }

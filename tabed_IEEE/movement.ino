@@ -5,18 +5,18 @@ int Centering()
   int x=0;
   while( x==0)
   {
-   if (Moving_average_Right() < 525)
+   if (distance_Right() < 525)
    {
       move_left(ssp);
       Serial.println("moving left");
       Serial.print(distance_Right());
    }
-   else if (Moving_average_Left() < 525)
+   else if (distance_Left() < 525)
    {
       move_right(ssp);
       Serial.println("moving right");
    }
-   else if (Moving_average_Right() >= 525 || Moving_average_Left() >= 525)
+   else if (distance_Right() >= 525 || distance_Left() >= 525)
   {
       Serial.println("stop");
       Stop(ssp);
@@ -26,15 +26,15 @@ int Centering()
  }
  while (x==1)
  {
-     if( Moving_average_Rear() > 135)
+     if( distance_Rear() > 135)
      {
           move_backward(sssp);
      }
-     else if (Moving_average_Rear() < 128) 
+     else if (distance_Rear() < 128) 
      {
           move_forward(sssp);
      }
-     else if (Moving_average_Rear() >=128 || Moving_average_Rear() <=135)
+     else if (distance_Rear() >=128 || distance_Rear() <=135)
      {
          Stop(ssp);
          x=2;
@@ -53,13 +53,13 @@ int Centering2()
       
     while (y == 0)
     {
-      if (Moving_average_Right() < 440)
+      if (distance_Right() < 440)
       {
         move_left(ssp);
         Serial.println("moving left");
         
       } 
-      if (Moving_average_Left() < 440)
+      if (distance_Left() < 440)
       {
       move_right(ssp);
       Serial.println("moving right");
@@ -67,7 +67,7 @@ int Centering2()
       
       y=1;
      }
-     if (Moving_average_Right() >= 445 && Moving_average_Right() <=455)
+     if (distance_Right() >= 445 && distance_Right() <=455)
         {
           Serial.println("stop");
           Stop(ssp);
@@ -100,9 +100,9 @@ void Ramp_movement()
 {
    
     Serial.println("Starting Ramp_Movement function");
-    int y = 0;
+    int z = 0;
     
-    while (y == 0)
+    while (z == 0)
     {
       MPU_loop();
       if (kalAngleX > -4)
@@ -122,11 +122,11 @@ void Ramp_movement()
             i = i++;
             delay(200);
             Stop(sp);
-            y = 1;
+            z = 1;
           }
           
         }            
-         while( y == 1)
+         while( z == 1)
          
          {   
             int previous_reading = 0;
@@ -147,7 +147,7 @@ void Ramp_movement()
               if (distance_Rear() < 100 && distance_Rear() > 0)
               {
                 Stop(sp);
-                y = 2;
+                z = 2;
               }    
             else if (distance_Rear()<0)
             {
@@ -157,11 +157,11 @@ void Ramp_movement()
             }   
          }
     
-     while (y == 2)
+     while (z == 2)
      {
       Centering();
       Serial.print("Leaving Ramp loop");
-      y = 3;
+      z = 3;
      }
     }
 }
@@ -179,19 +179,19 @@ void codemoveA(){
   
   if (A==0){
   move_left(ssp);
-  if(Moving_average_Left() <150){
+  if(distance_Left() <150){
   move_left(sssp);
-    if (Moving_average_Rear() > 150)
+    if (distance_Rear() > 150)
     {
       move_backward(sssp);
     }
-    else if (Moving_average_Rear() < 135)
+    else if (distance_Rear() < 135)
     {
       move_forward(sssp);
     }
-  if(Moving_average_Left() <100){
+  if(distance_Left() <100){
   move_left(18);
-  if(Moving_average_Left() < 85){
+  if(distance_Left() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -201,17 +201,17 @@ void codemoveA(){
   }
   else if (A==1){
    move_right(ssp);
-  if(Moving_average_Right() <170){
+  if(distance_Right() <170){
   move_right(sssp);
-    if (Moving_average_Rear() > 190){
+    if (distance_Rear() > 190){
       move_backward(sssp);
     }
-    else if (Moving_average_Rear() < 170){
+    else if (distance_Rear() < 170){
       move_forward(sssp);
     }
-  if(Moving_average_Right() <100){
+  if(distance_Right() <100){
   move_right(18);
-  if(Moving_average_Right() < 85){
+  if(distance_Right() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -254,19 +254,19 @@ void codemoveC(){
   
   if (C==0){
   move_left(ssp);
-  if(Moving_average_Left() <150){
+  if(distance_Left() <150){
   move_left(sssp);
-    if (Moving_average_Rear() > 190)
+    if (distance_Rear() > 190)
     {
       move_backward(sssp);
     }
-    else if (Moving_average_Rear() < 170)
+    else if (distance_Rear() < 170)
     {
       move_forward(sssp);
     }
-  if(Moving_average_Left() <100){
+  if(distance_Left() <100){
   move_left(18);
-  if(Moving_average_Left() < 85){
+  if(distance_Left() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -276,17 +276,17 @@ void codemoveC(){
   }
   else if (C==1){
    move_right(ssp);
-  if(Moving_average_Right() <170){
+  if(distance_Right() <170){
   move_right(sssp);
-    if (Moving_average_Rear() > 190){
+    if (distance_Rear() > 190){
       move_backward(sssp);
     }
-    else if (Moving_average_Rear() < 170){
+    else if (distance_Rear() < 170){
       move_forward(sssp);
     }
-  if(Moving_average_Right() <100){
+  if(distance_Right() <100){
   move_right(18);
-  if(Moving_average_Right() < 85){
+  if(distance_Right() < 85){
     Stop(sp);
     delay(500);
     x=1;
@@ -304,12 +304,12 @@ void chestmove()
   while (chest_exit == 0)
   {
     
-    if (Moving_average_Front() > 700)
+    if (distance_Front() > 700)
       {
         Serial.println("Moving to chest");
         move_forward(sssp);
       }
-    else if (Moving_average_Front() < 700)
+    else if (distance_Front() < 700)
      {
       Serial.print("Stopping at chest");
       Stop(sp);
@@ -328,16 +328,16 @@ void flagmove()
   while (flag_exit == 0)
   {
     
-    if (Moving_average_Front()> 300)
+    if (distance_Front()> 300)
     {
       Serial.println("Moving to flag");
       move_forward(ssp);
-      if (Moving_average_Front() < 300 && Moving_average_Front() > 180) 
+      if (distance_Front() < 300 && distance_Front() > 180) 
       {
         move_forward(sssp);    
       }
     } 
-    else if (Moving_average_Front() <= 100)
+    else if (distance_Front() <= 100)
       {
         Serial.print("Stopping at flag");
         Stop(sp);
@@ -422,11 +422,11 @@ void move_topressure_left()
 
     while (go == 0)
     { 
-     if (Moving_average_Left() > 200)
+     if (distance_Left() > 200)
         {
           move_left(sp);
         }
-        else if (Moving_average_Left() <= 180) 
+        else if (distance_Left() <= 180) 
         {
          Stop(sp);
          Serial.print("Stop for 1 sec");
@@ -480,11 +480,11 @@ void move_topressure_right()
 
     while (go == 0)
     { 
-     if (Moving_average_Right() > 200)
+     if (distance_Right() > 200)
         {
           move_right(sp);
         }
-        else if (Moving_average_Right() <= 180) 
+        else if (distance_Right() <= 180) 
         {
          Stop(sp);
          Serial.print("Stop for 5 sec");
@@ -517,7 +517,7 @@ return new_Enc_front
 void move_forward(int sp)                                                                   
 {
   motor1->run(FORWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(BACKWARD);
   motor2->setSpeed(sp);                              
   motor3->run(FORWARD);
@@ -529,7 +529,7 @@ void move_forward(int sp)
 void move_backward(int sp)
 {
   motor1->run(BACKWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(FORWARD);
   motor2->setSpeed(sp);
   motor3->run(BACKWARD);
@@ -541,7 +541,7 @@ void move_backward(int sp)
 void move_left(int sp)
 {
   motor1->run(BACKWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(BACKWARD);
   motor2->setSpeed(sp);
   motor3->run(FORWARD);
@@ -553,7 +553,7 @@ void move_left(int sp)
 void move_right(int sp)
 {
   motor1->run(FORWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(FORWARD);
   motor2->setSpeed(sp);
   motor3->run(BACKWARD);
@@ -565,7 +565,7 @@ void move_right(int sp)
 void move_diag_right(int sp)
 {
   motor1->run(FORWARD);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(RELEASE);
   motor2->setSpeed(sp);
   motor3->run(RELEASE);
@@ -577,7 +577,7 @@ void move_diag_right(int sp)
 void move_diag_left(int sp)
 {
   motor1->run(RELEASE);
-  motor1->setSpeed(sp+3);
+  motor1->setSpeed(sp);
   motor2->run(BACKWARD);
   motor2->setSpeed(sp);
   motor3->run(FORWARD);
