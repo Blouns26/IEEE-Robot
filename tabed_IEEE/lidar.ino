@@ -4,12 +4,12 @@
 /////////Sensor Reading Function////////////
 
 int distance_Front(){
-  long unfiltered_distance_Front;
-  long distance_Front;
+  long unfiltered_distance_Front = 0;;
+  long distance_Front = 0;;
   //Serial.print(sensor.readRangeContinuousMillimeters());
   if (Sensor1.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Front = Sensor1.readRangeContinuousMillimeters();
-  if (unfiltered_distance_Front < 2000 && unfiltered_distance_Front > 0)
+  if (unfiltered_distance_Front < 2000 && unfiltered_distance_Front > 0 && unfiltered_distance_Front != -2783)
   {
     distance_Front = unfiltered_distance_Front;
   }
@@ -17,37 +17,37 @@ int distance_Front(){
  return distance_Front;
 }
 int distance_Rear(){
-  long distance_Rear;
-  long unfiltered_distance_Rear;
+  long distance_Rear = 0;
+  long unfiltered_distance_Rear = 0;
   
   if (Sensor2.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Rear = Sensor2.readRangeContinuousMillimeters();
-  if(unfiltered_distance_Rear < 2000 && unfiltered_distance_Rear > 0)
+  if(unfiltered_distance_Rear < 2000 && unfiltered_distance_Rear > 0 && unfiltered_distance_Rear != -2783)
   {
     distance_Rear = unfiltered_distance_Rear;
   }
   return distance_Rear;
 }
 int distance_Right(){
-  long distance_Right;
-  long unfiltered_distance_Right;
+  long distance_Right = 0;
+  long unfiltered_distance_Right = 0;
   
   if (Sensor3.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Right = Sensor3.readRangeContinuousMillimeters();
   
-  if(unfiltered_distance_Right < 2000 && unfiltered_distance_Right > 0)
+  if(unfiltered_distance_Right < 2000 && unfiltered_distance_Right > 0 && unfiltered_distance_Right != -2783)
   {
     distance_Right = unfiltered_distance_Right;  
   }
   return distance_Right;
 }
 int distance_Left(){
-  long distance_Left;
-  long unfiltered_distance_Left;
+  long distance_Left = 0;
+  long unfiltered_distance_Left = 0;
   if (Sensor4.timeoutOccurred()) { Serial.print("TIMEOUT");}
   unfiltered_distance_Left = Sensor4.readRangeContinuousMillimeters();
   
-  if(unfiltered_distance_Left < 2000 && unfiltered_distance_Left > 0)
+  if(unfiltered_distance_Left < 2000 && unfiltered_distance_Left > 0 && unfiltered_distance_Left != -2783)
   {
     distance_Left = unfiltered_distance_Left;
   }

@@ -17,7 +17,8 @@ int C = 0;
 int a = 0;
 int b = 0;
 int c = 0;
-int stage[2] = {0};
+int d = 0;
+int stage[3] = {0};
 int F = 0;
 char str[3];
 
@@ -48,27 +49,34 @@ void loop()
   if (myReceiver.getResults()) { 
     
   }
-    //Serial.println(F("Do a cut-and-paste of the following lines into the "));
-    //Serial.println(F("designated location in rawSend.ino"));
-    //Serial.print(F("\n#define RAW_DATA_LEN "));
-    //Serial.println(recvGlobal.recvLength,DEC);
-    //Serial.print(F("uint16_t rawData[RAW_DATA_LEN]={\n\t"));
+    Serial.println(F("Do a cut-and-paste of the following lines into the "));
+    Serial.println(F("designated location in rawSend.ino"));
+    Serial.print(F("\n#define RAW_DATA_LEN "));
+    Serial.println(recvGlobal.recvLength,DEC);
+    Serial.print(F("uint16_t rawData[RAW_DATA_LEN]={\n\t"));
     for(bufIndex_t i=1;i<recvGlobal.recvLength;i++) {
-      //Serial.print(recvGlobal.recvBuffer[i],DEC);
-      //Serial.print(F(", "));
+      Serial.print(recvGlobal.recvBuffer[i],DEC);
+      Serial.print(F(", "));
+      //Serial.print("The size of RAW_DATA_LEN =  ");
+      //Serial.println(sizeof(recvGlobal.recvBuffer));
+      //Serial.println(i);
       if( (i % 8)==0) Serial.print(F("\n\t"));
           
     }
-    //Serial.println(F("1000};"));//Add arbitrary trailing space
-       
-    if ( sizeof(recvGlobal.recvBuffer) == 20)
+    Serial.println(F("1000};"));//Add arbitrary trailing space
+    int test = recvGlobal.recvBuffer[1];
+    Serial.print("This is the first bit and should be close to 9000:   ");
+    Serial.println(test);
+if (recvGlobal.recvLength == 20){
+    if ( sizeof(recvGlobal.recvBuffer) >= 20)
     {
       int c = recvGlobal.recvBuffer[18];
       int b = recvGlobal.recvBuffer[16];
       int a = recvGlobal.recvBuffer[14];
+      int d = recvGlobal.recvBuffer[12];
       //Serial.print(A);Serial.print('\t');Serial.print(B);Serial.print('\t');Serial.print(C);Serial.print('\n');
       
-      if (a > 1000)
+      if (d > 1000)
       {
         //Serial.println('1');
         stage[0] = 1;
@@ -78,7 +86,7 @@ void loop()
         //Serial.println('0');
         stage[0] = 0;
       }
-      if (b > 1000)
+      if (a > 1000)
       {
         //Serial.println('1');
         stage[1] = 1;
@@ -88,7 +96,7 @@ void loop()
       //Serial.println('0');
       stage[1] = 0;
       }
-      if (c > 1000)
+      if (b > 1000)
       {
         //Serial.println('1');
         stage[2] = 1;
@@ -98,38 +106,57 @@ void loop()
         //Serial.println('0');
         stage[2] = 0;
       }
+      if (c > 1000)
+      {
+        //Serial.println('1');
+        stage[3] = 1;
+      }
+      else 
+      {
+        //Serial.println('0');
+        stage[3] = 0;
+      }
     }
     else if (sizeof(recvGlobal.recvBuffer) < 20)
     {
       lcd.setCursor(0,1);
       lcd.print("Error in code");
+      Serial.print("Error with the number of bits");
     }
     
-     F = (stage[2])+(stage[1]*(2))+(stage[0]*(4));
+     F = (stage[3])+(stage[2]*(2))+(stage[1]*(4));
      //Serial.print("This is F: "); Serial.println(F);
-     Serial.print(stage[0]);Serial.print('\t');Serial.print(stage[1]);Serial.print('\t'); Serial.println(stage[2]);
+     Serial.print(stage[1]);Serial.print('\t');Serial.print(stage[2]);Serial.print('\t'); Serial.println(stage[3]);
      //delay(10);
     
    
    Serial.print("This is the value of F: "); Serial.println(F);
    //delay(100);
    //itoa(F, str, 10);
-   Serial.print("This is the value to send:  ");
-   Serial.println(str);
-   Serial3.write(F+48);
-   //delay(1000);
+   Serial.print("This is the value to send:  ");Serial.println(str);
+
+
    
-    
-    //Serial.println("Reading IR values"); 
+   if(stage[0] == 1)
+   {
+   lcd.setCursor(0,1);
+   lcd.print("positioning");
+   }
+   else
+   {
+    //lcd.print("           ");
+    Serial3.write(F+48);
+    Serial.println("Reading IR values"); 
     if (F == 0)
       {
         A=0;
         B=0;
         C=0;
         lcd.setCursor(0,1);
-        lcd.print("000");
+        lcd.print("0                               ");
         Stage_adv = 1;
         center = 0;
+        break;
       }
       if(F == 1)
       {
@@ -137,9 +164,10 @@ void loop()
         B = 0;
         C = 1; 
         lcd.setCursor(0,1);  
-        lcd.print("001");
+        lcd.print("1                               ");
         Stage_adv = 1;
         center = 1;
+        break;
      }
       else if(F == 2)
       {
@@ -147,9 +175,10 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("010");
+        lcd.print("2                               ");
         //Stage_adv = 1;
         center = 1;
+        break;
       }
       else if(F == 3)
       {
@@ -157,9 +186,10 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("011");
+        lcd.print("3                               ");
         //Stage_adv = 1;
         center = 1;
+        break;
       }
       else if(F == 4)
       {
@@ -167,9 +197,10 @@ void loop()
         B = 0;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("100");
+        lcd.print("4                               ");
         //Stage_adv = 1;
-        center = 1;     
+        center = 1;
+        break;     
       }
       else if (F == 5)
       {
@@ -177,9 +208,10 @@ void loop()
        B = 0;
        C = 1; 
        lcd.setCursor(0,1);
-       lcd.print("101");
+       lcd.print("5                               ");
        //Stage_adv = 1;
        center = 1;
+       break;
       }
       else if (F == 6)
       {
@@ -187,9 +219,10 @@ void loop()
         B = 1;
         C = 0;
         lcd.setCursor(0,1);
-        lcd.print("110");
+        lcd.print("6                               ");
         //Stage_adv = 1;
         center = 1;
+        break;
       }
       else if (F == 7)
       {
@@ -197,13 +230,24 @@ void loop()
         B = 1;
         C = 1;
         lcd.setCursor(0,1);
-        lcd.print("111");
+        lcd.print("7                               ");
         Stage_adv = 1;
+        break;
       }
+   }
+}   
+else
+{
+  Serial.println("Failed to send the 9ms pulse");
+  lcd.setCursor(0,1);
+  lcd.print("Failed    ");   
+}
+
+   //delay(1000);
      
-   myReceiver.enableIRIn();      //Restart receiver
-   
+    //Restart receiver
+    myReceiver.enableIRIn(); 
   } 
-  
+ 
 }
 

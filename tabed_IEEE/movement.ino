@@ -9,12 +9,15 @@ int Centering()
    {
       move_left(ssp);
       Serial.println("moving left");
+      Serial.println("This is the Right sensor");
       Serial.print(distance_Right());
    }
    else if (distance_Left() < 525)
    {
       move_right(ssp);
       Serial.println("moving right");
+      Serial.println("This is the Left sensor");
+      Serial.print(distance_Left());
    }
    else if (distance_Right() >= 525 || distance_Left() >= 525)
   {
@@ -57,12 +60,15 @@ int Centering2()
       {
         move_left(ssp);
         Serial.println("moving left");
-        
+        Serial.print("Right distnace sensor: ");
+        Serial.println(distance_Right());
       } 
       if (distance_Left() < 440)
       {
       move_right(ssp);
       Serial.println("moving right");
+      Serial.print("Left distance sensor: ");
+      Serial.println(distance_Left());
       }
       
       y=1;
@@ -70,6 +76,7 @@ int Centering2()
      if (distance_Right() >= 445 && distance_Right() <=455)
         {
           Serial.println("stop");
+          VL53L0X_Loop();
           Stop(ssp);
           delay(2000);
           x=1;
@@ -105,19 +112,21 @@ void Ramp_movement()
     while (z == 0)
     {
       MPU_loop();
-      if (kalAngleX > -4)
+      if (kalAngleX > -4 && kalAngleX < 8)
         {
-          Serial.println("starting to move up ramp");
+          Serial.print("starting to move up ramp: ");
           Serial.println(kalAngleX);
           MPU_loop();
           move_backward(sp);  
         }
       
-       else if (kalAngleX <= -4)
+       else if (kalAngleX > 8 && kalAngleX < 11)
         {
+          Serial.print("This is the kalAngleX: ");
+          Serial.println(kalAngleX);
           for (int i = 0; i < 1; i ++)
           { 
-            Serial.print("Setting up to move up ramp");
+            Serial.println("Setting up to move up ramp");
             move_forward(ssp);
             i = i++;
             delay(200);
@@ -131,7 +140,7 @@ void Ramp_movement()
          {   
             int previous_reading = 0;
             MPU_loop();
-            if (kalAngleX > 0)
+            if (kalAngleX > 11)
             {
             Serial.println("Moving up the ramp");
             move_backward_ramp();
@@ -173,6 +182,7 @@ void Ramp_movement()
 void codemoveA(){
 
   Serial.println("Starting CodemoveA function");
+  VL53L0X_Loop(); 
   int x =0;
   //int y=1;
   while(x==0){
@@ -226,7 +236,7 @@ void codemoveA(){
 void codemoveB()
 {
   Serial.println("Starting codemoveB function");
-  
+  VL53L0X_Loop(); 
   int x =0;
   while(x==0)
   {
@@ -248,6 +258,7 @@ void codemoveB()
  
 void codemoveC(){
   Serial.println("Starting codemoveC function");
+  VL53L0X_Loop(); 
   int x =0;
   //int y=1;
   while(x==0){
@@ -300,6 +311,7 @@ void codemoveC(){
 void chestmove()
 {
   Serial.println("Starting Chestmove function");
+  VL53L0X_Loop(); 
   int chest_exit = 0;
   while (chest_exit == 0)
   {
@@ -487,8 +499,9 @@ void move_topressure_right()
         else if (distance_Right() <= 180) 
         {
          Stop(sp);
-         Serial.print("Stop for 5 sec");
-         delay(5000);
+         Serial.print("Stop for 1 sec");
+         delay(1000);
+         go = 2;
         }
      
      }
@@ -523,7 +536,7 @@ void move_forward(int sp)
   motor3->run(FORWARD);
   motor3->setSpeed(sp);
   motor4->run(BACKWARD);
-  motor4->setSpeed(sp);
+  motor4->setSpeed(sp+4);
 }
 // motors 1 and 4 are inverse driections
 void move_backward(int sp)
@@ -535,7 +548,7 @@ void move_backward(int sp)
   motor3->run(BACKWARD);
   motor3->setSpeed(sp);
   motor4->run(FORWARD);
-  motor4->setSpeed(sp);
+  motor4->setSpeed(sp+4);
 }
 // motors 1 and 4 are inveresed directions
 void move_left(int sp)
@@ -547,7 +560,7 @@ void move_left(int sp)
   motor3->run(FORWARD);
   motor3->setSpeed(sp);
   motor4->run(FORWARD);
-  motor4->setSpeed(sp);
+  motor4->setSpeed(sp+4);
 }
 //motors 1 and 4 are inveresed
 void move_right(int sp)
@@ -559,7 +572,7 @@ void move_right(int sp)
   motor3->run(BACKWARD);
   motor3->setSpeed(sp);
   motor4->run(BACKWARD);
-  motor4->setSpeed(sp);
+  motor4->setSpeed(sp+4);
 }
 //motors 1 and 4 are inversed
 void move_diag_right(int sp)
@@ -571,7 +584,7 @@ void move_diag_right(int sp)
   motor3->run(RELEASE);
   motor3->setSpeed(sp);
   motor4->run(BACKWARD);
-  motor4->setSpeed(sp);
+  motor4->setSpeed(sp+4);
 }
 //motors 1 and 4 are inversed
 void move_diag_left(int sp)
@@ -583,7 +596,7 @@ void move_diag_left(int sp)
   motor3->run(FORWARD);
   motor3->setSpeed(sp);
   motor4->run(RELEASE);
-  motor4->setSpeed(sp);  
+  motor4->setSpeed(sp+4);  
 }
 
 void Stop(int sp)
@@ -607,7 +620,7 @@ void square_left(int sp)
   motor3->run(BACKWARD);
   motor3->setSpeed(sp);
   motor4->run(BACKWARD);
-  motor4->setSpeed(sp); 
+  motor4->setSpeed(sp+4); 
   
 }
 //motors 1 and 4 are inversed
@@ -620,7 +633,7 @@ void square_right(int sp)
   motor3->run(BACKWARD);
   motor3->setSpeed(sp);
   motor4->run(BACKWARD);
-  motor4->setSpeed(sp); 
+  motor4->setSpeed(sp+4); 
   
 }
 

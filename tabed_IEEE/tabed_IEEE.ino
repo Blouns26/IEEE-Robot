@@ -83,9 +83,9 @@ Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
 /////////////////////////////////////////////////////////////////////////
 
 /*Speed Variables*/
-int rsp = 100;
-int fsp = 120;
-int brsp = 75;
+int rsp = 120;
+int fsp = 140;
+int brsp = 85;
 int sp = 50;//75
 int ssp = 40;
 int sssp = 25;
@@ -159,14 +159,14 @@ void setup() {
 void loop() 
 {
  
-    //VL53L0X_Loop();     
-    Moving_average_Rear();
-    Moving_average_Front();
-    Moving_average_Left();
-    Moving_average_Right();
+    VL53L0X_Loop();     
+    //Moving_average_Rear();
+    //Moving_average_Front();
+    //Moving_average_Left();
+    //Moving_average_Right();
     MPU_loop();
     //PID_loop();
-     
+      
    
     
 
@@ -180,6 +180,7 @@ while (center ==0){
     
     int Stage_adv = 0;
     Serial.println("Reading data");
+    //if(Serial3.available()){
     Serial3.readBytes(str,1); 
     delay(100);
     Serial.print("This is the first read: ");
@@ -249,8 +250,8 @@ while (center ==0){
       
       center = 1;
     }
- 
-  center = 1;
+   
+  
 }
 while(center == 1 )
   {
@@ -266,8 +267,7 @@ while(center == 1 )
   Serial.print("moving to button");
   codemoveA();                          // After the IR sensor is read, the first value is added to variable A
   moveLinear(180);
-  delay(1000);
-  moveLinear(0);
+  moveLinear(50);
   center=3;                             // This is the Movement for the first stage to get the key 
   }
   /////////////////////////////////////////////////////////////////////////
@@ -275,29 +275,59 @@ while(center == 1 )
   /////////////////////////////////////////////////////////////////////////
   while(center==3)
   {
-    //Serial.print(" 2nd centering");       // This is the 2nd center operation to line up with the ramp
+    Serial.println("2nd centering");       // This is the 2nd center operation to line up with the ramp
     Centering();
-   // while (y == 0)
-   // {
-   //   square();
-   //   y = 1;
-   // }   
-  center=4;
+    int y = 1;
+    while (y == 1)
+    {
+      MPU_loop();
+      if (kalAngleX > -0.75 && kalAngleX < 1)
+      {
+          Serial.println("Moving down ramp");
+          move_forward(sssp);    // First move down the ramp
+          MPU_loop();          
+      }
+      else if (kalAngleX > 8 && kalAngleX < 20)
+      {
+        y = 2;
+      }
+     
+    }
+    while (y == 2)
+    {
+      MPU_loop();
+      if (kalAngleX > 8 && kalAngleX < 20)
+          {
+            Serial.println("Now on ramp");
+            move_forward(sssp);
+            MPU_loop();
+          }
+      else if(kalAngleX > -0.75 && kalAngleX < 7)
+            {
+              Serial.println("Reached the bottom of the ramp"); 
+              MPU_loop();
+              Stop(sp); 
+              y = 3;
+            }         
+     }
+     while (y == 3)
+     {
+        Serial.println("2nd center operation");
+        Centering2();  // Center operation to make sure it is now alligned with the bottom walls
+        center=4;
+        delay(1000);
+        y = 0;
+     }
   }
-  
-  move_forward(sssp);                   // First move down the ramp
-  delay(3000);
-  Stop(sp); 
-  Serial.print("2nd center operation");
-  Centering2();                         // Center operation to make sure it is now alligned with the bottom walls
-  delay(1000);
 
   /////////////////////////////////////////////////////////////////////////////
   ///////////////////////////Move to stage 2///////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   while (center==4)
   {
+  new_Enc_back = 0;
   codemoveB();    // 2nd IR value B is used to determine which location is next for stage 2
+  VL53L0X_Loop(); 
   delay(1000);
   Centering2();
   center = 5;
@@ -345,12 +375,16 @@ while(center == 1 )
    while (z == 0)
     {     
        Serial.println("Moving to Ramp");
-      if (distance_Front() < 1000)
+      if (distance_Front() < 700)   
       {  
+        Serial.println("Front distance sensor");
+        Serial.println(distance_Front());
+        Serial.println("Back distance sensor");
+        Serial.print(distance_Rear());
         move_backward(ssp);
         Serial.println("Moving backward");
         //Serial.print(Moving_average_Front()|| millis() < (time_now + period));
-        if (distance_Front() >= 900)
+        if (distance_Front() >= 700)
         {
           Serial.print(distance_Front());
           Serial.println("distance front is greater than 1000");

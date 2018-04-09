@@ -133,7 +133,7 @@ void MPU_loop() {
 
 /////Attempt to return data to main loop///////////
   /* Print Data */
-#if 1 // Set to 1 to activate
+#if 0 // Set to 1 to activate
   Serial.print(accX / 16384); Serial.print("\t");
   Serial.print(accY / 16384); Serial.print("\t");
   Serial.print(accZ / 16384); Serial.print("\t");
@@ -148,7 +148,7 @@ void MPU_loop() {
   Serial.print("\t");
 #endif
 
-#if 0 // Set to 0 to deactivate
+#if 1 // Set to 0 to deactivate
   Serial.print(roll); Serial.print("\t");
   Serial.print(gyroXangle); Serial.print("\t");
   Serial.print(compAngleX); Serial.print("\t");
