@@ -312,4 +312,33 @@ previous_error = error; //Remember to store the previous error.
 }//end of loop void
 
 
+////////KalAngle Average
+
+void KalAngleYavg_setup()
+    
+    {
+      
+      for(int thisReading = 0; thisReading < numReadings; thisReading++)
+      {
+        AngleYreadings[thisReading] = 0;
+      }
+      
+    }
+
+float kalAngleYavg(){
+      
+      total = total - AngleYreadings[readIndex];  //subtract the last reading;
+      AngleYreadings[readIndex] = kalAngleY;      //read data from the sensor
+      total = total + AngleYreadings[readIndex];  //add the reading to the total
+      readIndex = readIndex + 1;                  //advance to next position in array
+
+            if (readIndex >= numReadings){
+              readIndex = 0; //wrap around to the beginning
+            }
+
+      kalAngleY_avg = total/numReadings;
+      delay(1);
+      return kalAngleY_avg;
+}
+
 

@@ -38,19 +38,19 @@ float EncoderFront_loop(){
 }
 float EncoderBack_loop(){
   float newPositionback = backEnc.read();
-  float Total_revsback = (-newPositionback/1920.0);
+  float Total_revsback = (newPositionback/1920.0);
   float totaldistanceback = Total_revsback * 12.385433;
   
   
   if (newPositionback != oldPositionback){
     oldPositionback = newPositionback;
-    Serial.print(-newPositionback);
+    Serial.print(newPositionback);
     Serial.print("\n");
     Serial.print("\n\t");
     Serial.print(totaldistanceback);Serial.print("inches"); 
     Serial.print("\t");
     Serial.print("Total revelutions back wheel:  ");
-    Serial.print(-newPositionback/1920.0);
+    Serial.print(newPositionback/1920.0);
     Serial.print("\t");
   }
   return totaldistanceback;

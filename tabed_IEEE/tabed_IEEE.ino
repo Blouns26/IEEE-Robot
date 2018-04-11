@@ -12,8 +12,22 @@
 #include <Encoder.h>
 #include <IRLibRecvPCI.h>
 #include <Servo.h>
+#include <NewPing.h>
+
 
 #define RESTRICT_PITCH // Comment out to restrict roll to Ã‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+#define SONAR_NUM      4 // Number of sensors.
+#define MAX_DISTANCE 300 // Maximum distance (in cm) to ping.
+#define PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
+
+/*Sonic Sensor*/
+unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should happen for each sensor.
+unsigned int cm[SONAR_NUM];         // Where the ping distances are stored.
+uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
+//int distance_right = cm[0];
+//int distance_left = cm[1];
+//int distance_front = cm[2];
+//int distance_back  = cm[3];
 
 /*Kalman Filter*/
 Kalman kalmanX; // Create the Kalman instances
@@ -34,7 +48,15 @@ uint8_t i2cData[14]; // Buffer for I2C data
 /*Encoder Global Variables*/
     int new_Enc_back = 0;
     int new_Enc_front = 0;
-   
+////////////////////////////////////////////////////////////
+///////////////////SONAR INITIALIZATION/////////////////////
+////////////////////////////////////////////////////////////
+NewPing sonar[SONAR_NUM] = {   // Sensor object array.
+  NewPing(28, 30, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
+  NewPing(32, 34, MAX_DISTANCE),
+  NewPing(36, 38, MAX_DISTANCE),
+  NewPing(40, 42, MAX_DISTANCE)
+};   
 
 
 ////////////////////////////////////////////////////////////
@@ -84,11 +106,11 @@ Adafruit_DCMotor *motor4 = AFMS.getMotor(4);
 
 /*Speed Variables*/
 int rsp = 120;
-int fsp = 140;
+int fsp = 120;
 int brsp = 85;
-int sp = 50;//75
-int ssp = 40;
-int sssp = 25;
+int sp = 80;//75
+int ssp = 50;
+int sssp = 30;
 
 /*Encoder variable*/
 
@@ -103,6 +125,17 @@ int B = 0;
 int C = 0;
 
 char str[3];
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////Variables for average AngleY////////////////////////
+///////////////////////////////////////////////////////////////////////////
+const int numReadings = 10;
+double AngleYreadings[numReadings];
+int readIndex = 0;
+int total = 0;
+double kalAngleY_avg = 0;
+
+
 //////////////////////////////////////////
 ///////////SETUP LOOP/////////////////////
 //////////////////////////////////////////
@@ -116,6 +149,8 @@ void setup() {
   linear.attach(9);
   AFMS.begin();
   MPU_setup();
+  setup_Ping();
+  KalAngleYavg_setup();
   //PID_setup();
 
 ///////////////////////////////////////
@@ -158,17 +193,16 @@ void setup() {
 
 void loop() 
 {
- 
-    VL53L0X_Loop();     
-    //Moving_average_Rear();
-    //Moving_average_Front();
-    //Moving_average_Left();
-    //Moving_average_Right();
+  
     MPU_loop();
     //PID_loop();
       
-   
-    
+   //Serial.print("This is the kalAngleY_avg:   ");
+   //Serial.println(kalAngleYavg());
+   //Serial.print("This is the kalAngleY:    ");
+   //Serial.println(kalAngleY);
+   //Serial.print("This is the pitch
+
 
     
  //////////////////////////////////////////////////////////////////////////
@@ -177,7 +211,6 @@ void loop()
 
 int center = 0;
 while (center ==0){
-    
     int Stage_adv = 0;
     Serial.println("Reading data");
     //if(Serial3.available()){
@@ -196,9 +229,9 @@ while (center ==0){
       
     if (str[0] == '6')
    {
-    A = 0;
+    A = 1;
     B = 1;
-    C = 1;
+    C = 0;
     //Serial.print(a), Serial.print(b), Serial.print(c);
     center = 1;
     }if (str[0] == '5')
@@ -211,17 +244,17 @@ while (center ==0){
     }
     if (str[0] == '4')
     {
-      A = 0;
+      A = 1;
       B = 0;
-      C = 1;
+      C = 0;
       //Serial.print(a), Serial.print(b), Serial.print(c);
       center = 1;
     }
     if (str[0] == '3')
     {
-      A = 1;
+      A = 0;
       B = 1;
-      C = 0;
+      C = 1;
       //Serial.print(a), Serial.print(b), Serial.print(c);
       center = 1;
     } 
@@ -235,9 +268,9 @@ while (center ==0){
     }
     if (str[0] == '1')
     {
-      A = 1;
+      A = 0;
       B = 0;
-      C = 0;
+      C = 1;
       //Serial.print(a), Serial.print(b), Serial.print(c);
       center = 1;
     }
@@ -281,13 +314,13 @@ while(center == 1 )
     while (y == 1)
     {
       MPU_loop();
-      if (kalAngleX > -0.75 && kalAngleX < 1)
+      if (kalAngleY > -7 && kalAngleY < 1)
       {
           Serial.println("Moving down ramp");
           move_forward(sssp);    // First move down the ramp
           MPU_loop();          
       }
-      else if (kalAngleX > 8 && kalAngleX < 20)
+      else if (kalAngleY < -12 && kalAngleY > -30)
       {
         y = 2;
       }
@@ -296,13 +329,13 @@ while(center == 1 )
     while (y == 2)
     {
       MPU_loop();
-      if (kalAngleX > 8 && kalAngleX < 20)
+      if (kalAngleY < -12 && kalAngleY > -30)
           {
             Serial.println("Now on ramp");
             move_forward(sssp);
             MPU_loop();
           }
-      else if(kalAngleX > -0.75 && kalAngleX < 7)
+      else if(kalAngleY > -12 && kalAngleY < 1)
             {
               Serial.println("Reached the bottom of the ramp"); 
               MPU_loop();
@@ -326,10 +359,11 @@ while(center == 1 )
   while (center==4)
   {
   new_Enc_back = 0;
+  Serial.print("New Encoder value");
+  Serial.print(new_Enc_back);
   codemoveB();    // 2nd IR value B is used to determine which location is next for stage 2
-  VL53L0X_Loop(); 
   delay(1000);
-  Centering2();
+  //Centering2();
   center = 5;
   }
   
@@ -338,7 +372,7 @@ while(center == 1 )
   /////////////////////////////////////////////////////////////////////////////
   while (center == 5)
   {
-    Centering2();                       // Center operation to line up with the treasure chest to pick up
+    //Centering2();                       // Center operation to line up with the treasure chest to pick up
     center = 6;
   }
 
@@ -375,18 +409,18 @@ while(center == 1 )
    while (z == 0)
     {     
        Serial.println("Moving to Ramp");
-      if (distance_Front() < 700)   
+      if (front() < 1000)   
       {  
         Serial.println("Front distance sensor");
-        Serial.println(distance_Front());
+        Serial.println(front());
         Serial.println("Back distance sensor");
-        Serial.print(distance_Rear());
+        Serial.print(back());
         move_backward(ssp);
         Serial.println("Moving backward");
         //Serial.print(Moving_average_Front()|| millis() < (time_now + period));
-        if (distance_Front() >= 700)
+        if (front() >= 1000)
         {
-          Serial.print(distance_Front());
+          Serial.print(front());
           Serial.println("distance front is greater than 1000");
           Stop(sp);
           Centering2();
