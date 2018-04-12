@@ -161,13 +161,14 @@ void Ramp_movement()
           while (z == 2)
           {
            MPU_loop();
-           if (kalAngleY > 10)
+           if (kalAngleY > 15)
            {
             move_backward_ramp();    
+            Serial.print("About to be on top of ramp");
            }
-           else if (kalAngleY < 10)
+           else if (kalAngleY < 15)
            {
-            if (back() < 200)
+            if (back() > 200)
             {
               MPU_loop();
               move_backward(ssp);
@@ -184,7 +185,7 @@ void Ramp_movement()
      {
       Centering();
       Serial.print("Leaving Ramp loop");
-      z = 3;
+      z = 4;
      }
     }
 }
