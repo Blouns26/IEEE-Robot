@@ -170,6 +170,7 @@ void setup() {
   MPU_setup();
   setup_Ping();
   KalAngleYavg_setup();
+  
   //PID_setup();
 
 ///////////////////////////////////////
@@ -214,16 +215,16 @@ void loop()
 {
   
     MPU_loop();
+    
     //PID_loop();
-    move_forward(sp);    
+    //move_forward(sp);    
    //Serial.print("This is the kalAngleY_avg:   ");
    //Serial.println(kalAngleYavg());
    //Serial.print("This is the kalAngleY:    ");
    //Serial.println(kalAngleY);
    //Serial.print("This is the pitch
-}
 
-/*    
+    
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
@@ -232,7 +233,7 @@ int center = 0;
 while (center ==0){
     int Stage_adv = 0;
     Serial.println("Reading data");
-    //if(Serial3.available()){
+//    if(Serial3.available()){
     Serial3.readBytes(str,1); 
     delay(100);
     Serial.print("This is the first read: ");
