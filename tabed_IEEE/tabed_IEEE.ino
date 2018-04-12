@@ -13,12 +13,31 @@
 #include <IRLibRecvPCI.h>
 #include <Servo.h>
 #include <NewPing.h>
-
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_LSM9DS1.h>
+#include <Adafruit_Sensor.h>  // not used in this demo but required!
 
 #define RESTRICT_PITCH // Comment out to restrict roll to Ãƒâ€šÃ‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 #define SONAR_NUM      4 // Number of sensors.
 #define MAX_DISTANCE 300 // Maximum distance (in cm) to ping.
 #define PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
+
+/*Compass*/
+// i2c
+Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1();
+
+#define LSM9DS1_SCK A5
+#define LSM9DS1_MISO 12
+#define LSM9DS1_MOSI A4
+#define LSM9DS1_XGCS 6
+#define LSM9DS1_MCS 5
+// You can also use software SPI
+//Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1(LSM9DS1_SCK, LSM9DS1_MISO, LSM9DS1_MOSI, LSM9DS1_XGCS, LSM9DS1_MCS);
+// Or hardware SPI! In this case, only CS pins are passed in
+//Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1(LSM9DS1_XGCS, LSM9DS1_MCS);
+
+
 
 /*Sonic Sensor*/
 unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should happen for each sensor.
@@ -196,15 +215,15 @@ void loop()
   
     MPU_loop();
     //PID_loop();
-      
+    move_forward(sp);    
    //Serial.print("This is the kalAngleY_avg:   ");
    //Serial.println(kalAngleYavg());
    //Serial.print("This is the kalAngleY:    ");
    //Serial.println(kalAngleY);
    //Serial.print("This is the pitch
+}
 
-
-    
+/*    
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
  /////////////////////////////////////////////////////////////// 
@@ -410,6 +429,8 @@ while(center == 1 )
    while (z == 0)
     {     
        Serial.println("Moving to Ramp");
+       Serial.println("This the Front distance sensor:   ");
+       Serial.print(front());
       if (front() < 1000)   
       {  
         Serial.println("Front distance sensor");
