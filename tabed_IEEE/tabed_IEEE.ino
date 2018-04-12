@@ -18,6 +18,7 @@
 #define RESTRICT_PITCH // Comment out to restrict roll to Ãƒâ€šÃ‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 #define SONAR_NUM      4 // Number of sensors.
 #define MAX_DISTANCE 300 // Maximum distance (in cm) to ping.
+#define MAX_DISTANCE 299 // Maximum distance (in cm) to ping.
 #define PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
 /*Sonic Sensor*/
