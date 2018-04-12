@@ -15,7 +15,7 @@
 #include <NewPing.h>
 
 
-#define RESTRICT_PITCH // Comment out to restrict roll to Ã‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+#define RESTRICT_PITCH // Comment out to restrict roll to Ãƒâ€šÃ‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 #define SONAR_NUM      4 // Number of sensors.
 #define MAX_DISTANCE 300 // Maximum distance (in cm) to ping.
 #define PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
@@ -314,14 +314,15 @@ while(center == 1 )
     while (y == 1)
     {
       MPU_loop();
-      if (kalAngleY > -7 && kalAngleY < 1)
+      if (kalAngleY > -1 && kalAngleY < 2)
       {
           Serial.println("Moving down ramp");
           move_forward(sssp);    // First move down the ramp
           MPU_loop();          
       }
-      else if (kalAngleY < -12 && kalAngleY > -30)
+      else if (kalAngleY > 12 && kalAngleY < 30)
       {
+        Serial.print("Transition to ramp");
         y = 2;
       }
      
@@ -329,13 +330,13 @@ while(center == 1 )
     while (y == 2)
     {
       MPU_loop();
-      if (kalAngleY < -12 && kalAngleY > -30)
+      if (kalAngleY > 12 && kalAngleY < 30)
           {
             Serial.println("Now on ramp");
             move_forward(sssp);
             MPU_loop();
           }
-      else if(kalAngleY > -12 && kalAngleY < 1)
+      else if(kalAngleY > -1 && kalAngleY < 4)
             {
               Serial.println("Reached the bottom of the ramp"); 
               MPU_loop();
@@ -457,6 +458,7 @@ while(center == 1 )
 ///////////////////////////////////////////////////////////////
 ////////////////////Code for testing only//////////////////////
 ///////////////////////////////////////////////////////////////
+
 
 
 

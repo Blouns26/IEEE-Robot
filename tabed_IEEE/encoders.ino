@@ -7,10 +7,10 @@
 //   Low Performance:  neither pin has interrupt capability
 
 //Left Encoder
-Encoder frontEnc(19, 24);    //Labeled E1 on wire
+Encoder frontEnc(18, 22);    //Labeled E1 on wire
 
 //Right Encoder
-Encoder backEnc(18,22);      //Labreled E3 on wire
+Encoder backEnc(19,24);      //Labreled E3 on wire
 
 
 
@@ -55,6 +55,7 @@ float EncoderBack_loop(){
   }
   return totaldistanceback;
 }
+
 
 
 

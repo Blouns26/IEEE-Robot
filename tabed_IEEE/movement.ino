@@ -112,16 +112,18 @@ void Ramp_movement()
    
     Serial.println("Starting Ramp_Movement function");
     int z = 0;
-    while (z == 0){
+    
+    while (z == 0)              //When the robot is at the bottom of ramp
+    {
       MPU_loop();
-      if (kalAngleY < -3 && kalAngleY > -7)
+      if (kalAngleY > -1 && kalAngleY < 6)
         {
           Serial.print("Starting to move up ramp: ");
           MPU_loop();
           move_backward(sp);  
         }
       
-       else if (kalAngleY < -6 && kalAngleY > -15)
+       else if (kalAngleY > 8 && kalAngleY < 15)
         {
           Serial.print("This is the kalAngleY: ");
           Serial.println(kalAngleY);
@@ -135,43 +137,50 @@ void Ramp_movement()
             Stop(sp);
             z = 1;
           }
-          
-        }
-        else if (kalAngleY < -12) {
-          z = 1;            
-        }
-         while( z == 1)
+         }
+                  
+      }
+         while( z == 1)               //Moving to get on ramp
          {   
             int previous_reading = 0;
             MPU_loop();
-            if (kalAngleY < -3)
+            if (kalAngleY > -1 && kalAngleY < 6)
             {
               Serial.println("Moving up the ramp");
               move_backward_ramp();
               MPU_loop();
-              previous_reading = kalAngleY;
-              Serial.print("Previous angle reading:  ");
-              Serial.println(previous_reading);
-              if (previous_reading < 3 || back() < 200)
-              {
-                Serial.println("Reading back distance");
-                Serial.println(back());
-                move_backward(sp);
-                if (back() < 150 && back() > 0)
-                {
-                  Stop(sp);
-                  z = 2;
-                }
-            }    
-            else if (back()<100)
+             }
+             else if(kalAngleY > 10)
+             {
+              Serial.print("Robot is on the ramp");
+              move_backward_ramp();
+              MPU_loop();
+              z = 2;
+             }    
+          }
+          while (z == 2)
+          {
+           MPU_loop();
+           if (kalAngleY > 10)
+           {
+            move_backward_ramp();    
+           }
+           else if (kalAngleY < 10)
+           {
+            if (back() < 200)
             {
-              Serial.print("Error to close STOP!");
-              Stop(sp);
+              MPU_loop();
+              move_backward(ssp);
             }
-            }   
-         }
+            else if (back() < 100)
+            {
+              Serial.print("The robot made it to the top safely");
+              Stop(sp);
+              z = 3;
+            }
+           }
     
-     while (z == 2)
+     while (z == 3)
      {
       Centering();
       Serial.print("Leaving Ramp loop");
@@ -655,6 +664,7 @@ void move_backward_ramp()
   motor4->run(FORWARD);
   motor4->setSpeed(rsp);
 }
+
 
 
 
