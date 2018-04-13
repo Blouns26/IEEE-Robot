@@ -1,25 +1,26 @@
 
 
-
+/*
 
 void setupSensor()
 {
   // 1.) Set the accelerometer range
-  lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_2G);
+  //lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_2G);
   //lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_4G);
-  //lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_8G);
+  lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_8G);
   //lsm.setupAccel(lsm.LSM9DS1_ACCELRANGE_16G);
   
   // 2.) Set the magnetometer sensitivity
-  lsm.setupMag(lsm.LSM9DS1_MAGGAIN_4GAUSS);
+  //lsm.setupMag(lsm.LSM9DS1_MAGGAIN_4GAUSS);
   //lsm.setupMag(lsm.LSM9DS1_MAGGAIN_8GAUSS);
-  //lsm.setupMag(lsm.LSM9DS1_MAGGAIN_12GAUSS);
+  lsm.setupMag(lsm.LSM9DS1_MAGGAIN_12GAUSS);
   //lsm.setupMag(lsm.LSM9DS1_MAGGAIN_16GAUSS);
 
   // 3.) Setup the gyroscope
-  lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_245DPS);
+  //lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_245DPS);
   //lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_500DPS);
-  //lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_2000DPS);
+  lsm.setupGyro(lsm.LSM9DS1_GYROSCALE_2000DPS);
+  
 }
 
 
@@ -45,13 +46,13 @@ void Mag_setup()
 
 void Mag_loop() 
 {
-  lsm.read();  /* ask it to read in the data */ 
+    /* ask it to read in the data */ 
 
   /* Get a new sensor event */ 
   sensors_event_t a, m, g, temp;
 
   lsm.getEvent(&a, &m, &g, &temp); 
-  /*
+  
   Serial.print("Accel X: "); Serial.print(a.acceleration.x); Serial.print(" m/s^2");
   Serial.print("\tY: "); Serial.print(a.acceleration.y);     Serial.print(" m/s^2 ");
   Serial.print("\tZ: "); Serial.print(a.acceleration.z);     Serial.println(" m/s^2 ");
@@ -65,8 +66,8 @@ void Mag_loop()
   Serial.print("\tZ: "); Serial.print(g.gyro.z);      Serial.println(" dps");
 
   Serial.println();
-  delay(200);
-  */
+  //delay(200);
+  /*
   lsm.read();
   Serial.print("Accel X: "); Serial.print((int)lsm.accelData.x); Serial.print(" ");
   Serial.print("Y: "); Serial.print((int)lsm.accelData.y);       Serial.print(" ");
@@ -78,6 +79,7 @@ void Mag_loop()
   Serial.print("Y: "); Serial.print((int)lsm.gyroData.y);        Serial.print(" ");
   Serial.print("Z: "); Serial.println((int)lsm.gyroData.z);      Serial.println(" ");
   Serial.print("Temp: "); Serial.print((int)lsm.temperature);    Serial.println(" ");
+  */
   delay(200);
   
   // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
@@ -103,7 +105,7 @@ void Mag_loop()
   float headingDegrees = heading * 180/M_PI; 
   Serial.print("Heading (degrees): "); Serial.println(headingDegrees);
   
-  delay(500);
+  delay(300);
 }
 
 

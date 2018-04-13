@@ -20,7 +20,7 @@
 
 #define RESTRICT_PITCH // Comment out to restrict roll to Ãƒâ€šÃ‚Â±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
 #define SONAR_NUM      4 // Number of sensors.
-#define MAX_DISTANCE 300 // Maximum distance (in cm) to ping.
+#define MAX_DISTANCE 299 // Maximum distance (in cm) to ping.
 #define PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
 /*Compass*/
@@ -170,6 +170,7 @@ void setup() {
   MPU_setup();
   setup_Ping();
   KalAngleYavg_setup();
+  
   //PID_setup();
 
 ///////////////////////////////////////
@@ -214,14 +215,23 @@ void loop()
 {
   
     MPU_loop();
+<<<<<<< HEAD
     //PID_loop();    
+=======
+    
+    //PID_loop();
+    //move_forward(sp);    
+>>>>>>> a0c48cbe9f68ff960b7c04f9f33b7db26d0f3d42
    //Serial.print("This is the kalAngleY_avg:   ");
    //Serial.println(kalAngleYavg());
    //Serial.print("This is the kalAngleY:    ");
    //Serial.println(kalAngleY);
    //Serial.print("This is the pitch
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a0c48cbe9f68ff960b7c04f9f33b7db26d0f3d42
     
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
@@ -231,7 +241,7 @@ int center = 0;
 while (center ==0){
     int Stage_adv = 0;
     Serial.println("Reading data");
-    //if(Serial3.available()){
+//    if(Serial3.available()){
     Serial3.readBytes(str,1); 
     delay(100);
     Serial.print("This is the first read: ");
