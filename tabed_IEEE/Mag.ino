@@ -48,7 +48,7 @@ void Mag_loop()
 {
     /* ask it to read in the data */ 
 
-  /* Get a new sensor event */ 
+  /* Get a new sensor event */ /*
   sensors_event_t a, m, g, temp;
 
   lsm.getEvent(&a, &m, &g, &temp); 
@@ -79,7 +79,7 @@ void Mag_loop()
   Serial.print("Y: "); Serial.print((int)lsm.gyroData.y);        Serial.print(" ");
   Serial.print("Z: "); Serial.println((int)lsm.gyroData.z);      Serial.println(" ");
   Serial.print("Temp: "); Serial.print((int)lsm.temperature);    Serial.println(" ");
-  */
+  *//*
   delay(200);
   
   // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
