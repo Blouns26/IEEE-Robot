@@ -215,23 +215,16 @@ void loop()
 {
   
     MPU_loop();
-<<<<<<< HEAD
-    //PID_loop();    
-=======
-    
+    //PID_loop();      
     //PID_loop();
     //move_forward(sp);    
->>>>>>> a0c48cbe9f68ff960b7c04f9f33b7db26d0f3d42
    //Serial.print("This is the kalAngleY_avg:   ");
    //Serial.println(kalAngleYavg());
    //Serial.print("This is the kalAngleY:    ");
    //Serial.println(kalAngleY);
    //Serial.print("This is the pitch
 
-<<<<<<< HEAD
 
-=======
->>>>>>> a0c48cbe9f68ff960b7c04f9f33b7db26d0f3d42
     
  //////////////////////////////////////////////////////////////////////////
  ////////////////////////Setup to read IR Sensor///////////////////////////
@@ -262,8 +255,9 @@ while (center ==0){
     C = 0;
     //Serial.print(a), Serial.print(b), Serial.print(c);
     center = 1;
-    }if (str[0] == '5')
-   {
+    }
+    if (str[0] == '5')
+    {
     A = 1;
     B = 0;
     C = 1;
@@ -406,13 +400,13 @@ while(center == 1 )
     {
       if (left() < 135)
       {
-        move_right();
+        move_right(sp);
       }
      else if (B==1)
      {
       if (right() < 135)
       {
-        move_left(); 
+        move_left(sp); 
       }
      }
     }
