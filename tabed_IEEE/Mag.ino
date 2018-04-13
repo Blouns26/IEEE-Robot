@@ -43,7 +43,7 @@ void Mag_setup()
   // helper to just set the default scaling we want, see above!
   setupSensor();
 }
-
+*/
 void Mag_loop() 
 {
     /* ask it to read in the data */ 

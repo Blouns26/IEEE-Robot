@@ -217,7 +217,7 @@ void loop()
 {
   
     MPU_loop();
-    
+    //PID_loop();      
     //PID_loop();
     //move_forward(sp);    
    //Serial.print("This is the kalAngleY_avg:   ");
@@ -225,6 +225,7 @@ void loop()
    //Serial.print("This is the kalAngleY:    ");
    //Serial.println(kalAngleY);
    //Serial.print("This is the pitch
+
 
     
  //////////////////////////////////////////////////////////////////////////
@@ -256,8 +257,9 @@ while (center ==0){
     C = 0;
     //Serial.print(a), Serial.print(b), Serial.print(c);
     center = 1;
-    }if (str[0] == '5')
-   {
+    }
+    if (str[0] == '5')
+    {
     A = 1;
     B = 0;
     C = 1;
@@ -363,6 +365,7 @@ while(center == 1 )
               Serial.println("Reached the bottom of the ramp"); 
               MPU_loop();
               Stop(sp); 
+              delay(500);
               y = 3;
             }         
      }
@@ -371,7 +374,7 @@ while(center == 1 )
         Serial.println("2nd center operation");
         Centering2();  // Center operation to make sure it is now alligned with the bottom walls
         center=4;
-        delay(1000);
+        //delay(1000);
         y = 0;
      }
   }
@@ -391,10 +394,25 @@ while(center == 1 )
   }
   
   /////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////Move to center with chest/////////////////////////
+  ///////////////////////////Setup for move to flag//////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   while (center == 5)
   {
+    if (B==0)
+    {
+      if (left() < 135)
+      {
+        move_right(sp);
+      }
+     else if (B==1)
+     {
+      if (right() < 135)
+      {
+        move_left(sp); 
+      }
+     }
+    }
+    
     //Centering2();                       // Center operation to line up with the treasure chest to pick up
     center = 6;
   }
@@ -404,8 +422,8 @@ while(center == 1 )
   /////////////////////////////////////////////////////////////////////////////
   while (center == 6)
   {
-    Serial.println("Moving to chest");
-    chestmove(); 
+    //Serial.println("Moving to chest");
+    //chestmove(); 
     center = 7;
   }
   /////////////////////////////////////////////////////////////////////////////
